@@ -80,17 +80,23 @@ COPY patches ./patches
 # ---------------------------------------------------------
 # Yarn dependencies
 # ---------------------------------------------------------
-FROM yarn-base as yarn-deps
+FROM yarn-base as yarn-dev-deps
+
+RUN --mount=type=cache,target=/usr/local/share/.cache --mount=type=cache,target=/root/.cache/Cypress \
+  yarn install --frozen-lockfile --quiet
+
+# ---------------------------------------------------------
+# Yarn dependencies
+# ---------------------------------------------------------
+FROM yarn-base as yarn-prod-deps
 
 RUN --mount=type=cache,target=/usr/local/share/.cache \
-  yarn install --production --frozen-lockfile --quiet \
-  && mv node_modules /opt/node_modules.prod \
-  && yarn install --frozen-lockfile --quiet
+  yarn install --production --frozen-lockfile --quiet
 
 # ---------------------------------------------------------
 # Builder with source code
 # ---------------------------------------------------------
-FROM yarn-deps as builder-src
+FROM yarn-dev-deps as builder-src
 
 # Copy application code
 COPY __mocks__ ./__mocks__
@@ -108,7 +114,6 @@ COPY .env.oss \
   babel.config.js \
   coffeelint.json \
   cypress.json \
-  dangerfile.ts \
   jest.config.v1.js \
   jest.config.v2.js \
   package.json \
@@ -212,7 +217,7 @@ COPY --chown=deploy:deploy --from=builder /app/server.dist.js.map .
 
 
 # Production node modules.
-COPY --chown=deploy:deploy --from=yarn-deps /opt/node_modules.prod ./node_modules
+COPY --chown=deploy:deploy --from=yarn-prod-deps /app/node_modules ./node_modules
 
 ENTRYPOINT ["/usr/bin/dumb-init", "--"]
 CMD ["yarn", "start"]
