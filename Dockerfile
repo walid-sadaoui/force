@@ -173,7 +173,29 @@ RUN apt-get update && apt-get install -y \
   xauth \
   xvfb
 
-COPY --from=builder /app /app
+RUN yarn global add mocha
+
+# Base code
+COPY --from=builder /app/.env.oss .
+COPY --from=builder /app/test.config.js .
+COPY --from=builder /app/data ./data
+COPY --from=builder /app/package.json .
+COPY --from=builder /app/scripts ./scripts
+COPY --from=builder /app/webpack ./webpack
+COPY --from=builder /app/yarn.lock .
+
+# Client assets
+COPY --from=builder /app/manifest.json .
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/src ./src
+
+# Server assets
+COPY --from=builder /app/server.dist.js .
+COPY --from=builder /app/server.dist.js.map .
+
+
+# Production node modules.
+COPY --from=yarn-deps /opt/node_modules.prod ./node_modules
 
 # ---------------------------------------------------------
 # Release image

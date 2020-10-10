@@ -17,9 +17,10 @@ fi
 # start server in the background in production mode
 NODE_ENV=production nohup yarn start &
 
-# wait for it to accept connections
-./node_modules/.bin/wait-on http://localhost:5000
-sleep 10
+while ! nc -z localhost 5000; do
+  sleep 0.1
+done
+sleep 1
 
 export ELECTRON_EXTRA_LAUNCH_ARGS=disable-dev-shm-usage
 
