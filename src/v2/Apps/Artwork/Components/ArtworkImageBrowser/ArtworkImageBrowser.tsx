@@ -1,20 +1,36 @@
-import { ArtworkImageBrowser_artwork } from "v2/__generated__/ArtworkImageBrowser_artwork.graphql"
-import { BaseCarousel as Carousel } from "v2/Components/FlickityCarousel"
-import { Lightbox } from "v2/Components/Lightbox"
-import FlickityType from "flickity"
-import React from "react"
+import React, { useState } from "react"
 import styled from "styled-components"
 import { Media } from "v2/Utils/Responsive"
+import {
+  Box,
+  Carousel,
+  CarouselCell,
+  CarouselRail,
+  ProgressDots,
+  ResponsiveBox,
+  Swiper,
+  SwiperCell,
+  SwiperRail,
+} from "@artsy/palette"
+import { createFragmentContainer, graphql } from "react-relay"
+import { ArtworkImageBrowser_artwork } from "v2/__generated__/ArtworkImageBrowser_artwork.graphql"
+import { Lightbox } from "v2/Components/Lightbox"
 
-import { Box, ChevronIcon, Col, Flex, color, space } from "@artsy/palette"
+const Container = styled(Box)`
+  user-select: none;
+`
+
+const Image = styled.img`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+`
 
 interface ArtworkBrowserProps {
-  imageAlt: string
-  images: ArtworkImageBrowser_artwork["images"]
-  setCarouselRef: (carouselRef: FlickityType) => void
+  artwork: ArtworkImageBrowser_artwork
 }
-
-type Image = ArtworkBrowserProps["images"][number]
 
 export const ArtworkImageBrowser = (props: ArtworkBrowserProps) => {
   return (
@@ -22,6 +38,7 @@ export const ArtworkImageBrowser = (props: ArtworkBrowserProps) => {
       <Media at="xs">
         <SmallArtworkImageBrowser {...props} />
       </Media>
+
       <Media greaterThan="xs">
         <LargeArtworkImageBrowser {...props} />
       </Media>
@@ -29,204 +46,171 @@ export const ArtworkImageBrowser = (props: ArtworkBrowserProps) => {
   )
 }
 
-export class LargeArtworkImageBrowser extends React.Component<
-  ArtworkBrowserProps
-> {
-  render() {
-    const hasMultipleImages = this.props.images.length > 1
-    const { imageAlt, images, setCarouselRef } = this.props
-
-    // FIXME: During SSR pass want to hide other images. Work around for lack
-    // of SSR support in Flickity.
-    const carouselImages = typeof window === "undefined" ? [images[0]] : images
-
-    const options = {
-      prevNextButtons: false,
-      wrapAround: true,
-      pageDots: hasMultipleImages,
-      cellAlign: "left",
-      draggable: false,
-      lazyLoad: true,
-    }
-
-    // The maxHeight was added in order to fix how Google bot renders the page
-    return (
-      <Container key={Math.random()}>
-        <Carousel
-          showArrows={hasMultipleImages}
-          options={options}
-          oneSlideVisible
-          height="auto"
-          setCarouselRef={setCarouselRef}
-          data={carouselImages}
-          renderLeftArrow={({ flickity }) => (
-            <Col sm={1}>
-              <ArrowButton
-                direction="left"
-                onClick={() => {
-                  // FIXME: Flickity.prototype.previous typing is missing second
-                  // `isInstant` method.
-                  // @ts-ignore
-                  flickity.previous(false, true)
-                }}
-              />
-            </Col>
-          )}
-          renderRightArrow={({ flickity }) => (
-            <Col sm={1}>
-              <ArrowButton
-                direction="right"
-                onClick={() => {
-                  // FIXME: Flickity.prototype.next typing is missing second
-                  // `isInstant` method.
-                  // @ts-ignore
-                  flickity.next(false, true)
-                }}
-              />
-            </Col>
-          )}
-          // maxHeight is needed for google search indexing
-          render={(image: Image) => {
-            return (
-              <Flex
-                flexDirection="column"
-                justifyContent="center"
-                width="100%"
-                px={hasMultipleImages ? [2, 2, 0] : 0}
-                height="60vh"
-                maxHeight="2000px"
-              >
-                <Lightbox
-                  imageAlt={imageAlt}
-                  deepZoom={image.deepZoom}
-                  enabled={image.is_zoomable}
-                  isDefault={image.is_default}
-                  src={image.uri}
-                  initialHeight="60vh"
-                  maxHeight="2000px"
-                />
-              </Flex>
-            )
-          }}
-        />
-      </Container>
-    )
+export const ArtworkImageBrowserFragmentContainer = createFragmentContainer(
+  ArtworkImageBrowser,
+  {
+    artwork: graphql`
+      fragment ArtworkImageBrowser_artwork on Artwork {
+        alt: formattedMetadata
+        images {
+          internalID
+          resized(width: 640, height: 640) {
+            src
+            srcSet
+            width
+            height
+          }
+          isZoomable
+          # TODO: Extract into fragment on Lightbox component
+          deepZoom {
+            Image {
+              xmlns
+              Url
+              Format
+              TileSize
+              Overlap
+              Size {
+                Width
+                Height
+              }
+            }
+          }
+        }
+      }
+    `,
   }
-}
+)
 
-export class SmallArtworkImageBrowser extends React.Component<
-  ArtworkBrowserProps
-> {
-  render() {
-    const { images, imageAlt, setCarouselRef } = this.props
-    // FIXME: During SSR pass want to hide other images. Work around for lack
-    // of SSR support in Flickity.
-    const carouselImages = typeof window === "undefined" ? [images[0]] : images
-    const hasMultipleImages = this.props.images.length > 1
-    const options = {
-      prevNextButtons: false,
-      wrapAround: true,
-      draggable: hasMultipleImages,
-      groupCells: 1,
-      pageDots: hasMultipleImages,
-    }
+export const LargeArtworkImageBrowser: React.FC<ArtworkBrowserProps> = ({
+  artwork,
+}) => {
+  const [activeIndex, setActiveIndex] = useState(0)
 
-    // The maxHeight was added in order to fix how Google bot renders the page
-    return (
-      <Container key={Math.random()}>
-        <Carousel
-          options={options}
-          data={carouselImages}
-          oneSlideVisible
-          setCarouselRef={setCarouselRef}
-          render={(image: Image) => {
-            return (
-              <Flex
-                flexDirection="column"
-                justifyContent="center"
-                px={1}
-                width="100%"
-              >
-                <Lightbox
-                  imageAlt={imageAlt}
-                  deepZoom={image.deepZoom}
-                  enabled={image.is_zoomable}
-                  isDefault={image.is_default}
-                  src={image.uri}
-                  maxHeight="2000px"
-                  initialHeight="45vh"
-                />
-              </Flex>
-            )
-          }}
-        />
-      </Container>
-    )
-  }
-}
-
-const ArrowButton = ({ direction, onClick }) => {
   return (
-    <ArrowButtonContainer
-      flexDirection="column"
-      justifyContent="center"
-      height="100%"
-      alignItems={direction === "left" ? "flex-start" : "flex-end"}
-      onClick={onClick}
-    >
-      <ChevronIcon direction={direction} width={30} height={30} />
-    </ArrowButtonContainer>
+    <Container>
+      <Carousel
+        onChange={setActiveIndex}
+        Cell={React.forwardRef((props, ref) => {
+          return (
+            <CarouselCell
+              {...props}
+              ref={ref as any}
+              display="inline-flex"
+              width="100%"
+              flexShrink={0}
+              pr={0}
+            />
+          )
+        })}
+        Rail={props => {
+          return <CarouselRail {...props} transition="none" display="flex" />
+        }}
+      >
+        {artwork.images.map(image => {
+          return (
+            <Box
+              key={image.internalID}
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              width="100%"
+              height="60vh"
+            >
+              <ResponsiveBox
+                position="relative"
+                mx="auto"
+                aspectWidth={image.resized.width}
+                aspectHeight={image.resized.height}
+                maxHeight={640}
+                maxWidth={640}
+                bg="black10"
+              >
+                <Lightbox deepZoom={image.deepZoom} enabled={image.isZoomable}>
+                  <Image
+                    src={image.resized.src}
+                    srcSet={image.resized.srcSet}
+                    alt={artwork.alt}
+                  />
+                </Lightbox>
+              </ResponsiveBox>
+            </Box>
+          )
+        })}
+      </Carousel>
+
+      {artwork.images.length > 1 && (
+        <ProgressDots
+          amount={artwork.images.length}
+          activeIndex={activeIndex}
+          mt={1}
+        />
+      )}
+    </Container>
   )
 }
 
-const ArrowButtonContainer = styled(Flex)`
-  cursor: pointer;
-  opacity: 0.1;
-  transition: opacity 0.25s;
+export const SmallArtworkImageBrowser: React.FC<ArtworkBrowserProps> = ({
+  artwork,
+}) => {
+  const [activeIndex, setActiveIndex] = useState(0)
 
-  &:hover {
-    opacity: 1;
-  }
-`
+  return (
+    <Container>
+      <Swiper
+        snap="center"
+        onChange={setActiveIndex}
+        Cell={React.forwardRef((props, ref) => {
+          return (
+            <SwiperCell
+              {...props}
+              ref={ref as any}
+              display="inline-flex"
+              width="100%"
+              verticalAlign="middle"
+              pr={0}
+            />
+          )
+        })}
+        Rail={props => {
+          return <SwiperRail {...props} display="block" />
+        }}
+      >
+        {artwork.images.map(image => {
+          return (
+            <Box
+              key={image.internalID}
+              alignItems="center"
+              justifyContent="center"
+              width="100%"
+              overflow="hidden"
+            >
+              <ResponsiveBox
+                position="relative"
+                mx="auto"
+                aspectWidth={image.resized.width}
+                aspectHeight={image.resized.height}
+                maxHeight={640}
+                maxWidth={640}
+                bg="black10"
+              >
+                <Image
+                  src={image.resized.src}
+                  srcSet={image.resized.srcSet}
+                  alt={artwork.alt}
+                />
+              </ResponsiveBox>
+            </Box>
+          )
+        })}
+      </Swiper>
 
-const Container = styled(Box)`
-  user-select: none;
-
-  .flickity-viewport {
-    overflow: hidden;
-  }
-
-  .flickity-slider > div {
-    margin-left: 5px;
-    margin-right: 5px;
-    width: 100%;
-  }
-
-  .flickity-page-dots {
-    text-align: center;
-    height: 0;
-    padding-top: ${space(1)}px;
-
-    .dot {
-      width: 4px;
-      height: 4px;
-      border-radius: 100%;
-      display: inline-block;
-      margin: ${space(0.5)}px;
-      background-color: ${color("black10")};
-    }
-
-    .dot.is-selected {
-      background-color: ${color("black100")};
-    }
-  }
-`
-
-const PageIndicator = styled.span`
-  &::after {
-    content: "•";
-  }
-`
-
-// @ts-ignore
-PageIndicator.displayName = "PageIndicator"
+      {artwork.images.length > 1 && (
+        <ProgressDots
+          amount={artwork.images.length}
+          activeIndex={activeIndex}
+          mt={1}
+        />
+      )}
+    </Container>
+  )
+}

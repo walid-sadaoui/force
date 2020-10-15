@@ -352,7 +352,7 @@ export const ArtworkAppFragmentContainer = createFragmentContainer(
         ...ArtworkBanner_artwork
         ...ArtworkSidebar_artwork
         ...ArtworkDetails_artwork
-        ...ArtworkImageBrowser_artwork
+        ...ArtworkImageBrowserContainer_artwork
         ...OtherWorks_artwork
         ...ArtworkArtistSeries_artwork
         ...PricingContext_artwork

@@ -1,4 +1,4 @@
-import { Box, Flex, Image, color, space } from "@artsy/palette"
+import { Box, Clickable, Flex, Image, color, space } from "@artsy/palette"
 import { withSystemContext } from "v2/Artsy"
 import * as Schema from "v2/Artsy/Analytics/Schema"
 import FadeTransition from "v2/Components/Animation/FadeTransition"
@@ -285,6 +285,7 @@ class LightboxComponent extends React.Component<LightboxProps, LightboxState> {
   render() {
     const {
       enabled,
+      children,
       isDefault,
       imageAlt,
       src,
@@ -311,21 +312,12 @@ class LightboxComponent extends React.Component<LightboxProps, LightboxState> {
     return (
       <>
         {this.renderPortal()}
-        <Flex
-          justifyContent="center"
-          alignItems="center"
-          height={height}
+        <Clickable
+          style={{ cursor: enabled ? "zoom-in" : "auto" }}
           onClick={enabled ? this.show.bind(this) : null}
         >
-          <StyledImage
-            style={{ cursor: enabled ? "zoom-in" : "auto" }}
-            src={src}
-            alt={imageAlt}
-            data-type="artwork-image"
-            data-is-default={isDefault}
-            preventRightClick={!isAdmin}
-          />
-        </Flex>
+          {children}
+        </Clickable>
       </>
     )
   }

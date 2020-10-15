@@ -1,40 +1,41 @@
-import { ArtworkImageBrowser_artwork } from "v2/__generated__/ArtworkImageBrowser_artwork.graphql"
-import { ArtworkImageBrowserQuery } from "v2/__generated__/ArtworkImageBrowserQuery.graphql"
+import { ArtworkImageBrowserContainer_artwork } from "v2/__generated__/ArtworkImageBrowserContainer_artwork.graphql"
+import { ArtworkImageBrowserContainerQuery } from "v2/__generated__/ArtworkImageBrowserContainerQuery.graphql"
 import { SystemContext } from "v2/Artsy"
 import { renderWithLoadProgress } from "v2/Artsy/Relay/renderWithLoadProgress"
 import { SystemQueryRenderer as QueryRenderer } from "v2/Artsy/Relay/SystemQueryRenderer"
 import React, { useContext } from "react"
 import { createFragmentContainer, graphql } from "react-relay"
 import { ArtworkActionsFragmentContainer as ArtworkActions } from "./ArtworkActions"
-import { ArtworkImageBrowser } from "./ArtworkImageBrowser"
+import { ArtworkImageBrowserFragmentContainer as ArtworkImageBrowser } from "./ArtworkImageBrowser"
 import { Box } from "@artsy/palette"
 import { ContextModule } from "@artsy/cohesion"
 
-export interface ImageBrowserProps {
-  artwork: ArtworkImageBrowser_artwork
+export interface ArtworkImageBrowserContainerProps {
+  artwork: ArtworkImageBrowserContainer_artwork
 }
 
 export class ArtworkImageBrowserContainer extends React.Component<
-  ImageBrowserProps
-  > {
+  ArtworkImageBrowserContainerProps
+> {
   carousel = null
 
   render() {
-    const { images, image, image_alt } = this.props.artwork
-    if (!images.length) {
+    const {
+      artwork,
+      artwork: { images, image },
+    } = this.props
+
+    if (images.length === 0) {
       return null
     }
 
     const defaultImageIndex = images.findIndex(
       e => e.internalID === image.internalID
     )
+
     return (
       <Box data-test={ContextModule.artworkImage}>
-        <ArtworkImageBrowser
-          setCarouselRef={f => (this.carousel = f)}
-          images={images}
-          imageAlt={image_alt}
-        />
+        <ArtworkImageBrowser artwork={artwork} />
         <ArtworkActions
           selectDefaultSlide={() => {
             this.carousel.select(defaultImageIndex, false, true)
@@ -47,43 +48,23 @@ export class ArtworkImageBrowserContainer extends React.Component<
 }
 
 export const ArtworkImageBrowserFragmentContainer = createFragmentContainer<
-  ImageBrowserProps
+  ArtworkImageBrowserContainerProps
 >(ArtworkImageBrowserContainer, {
   artwork: graphql`
-    fragment ArtworkImageBrowser_artwork on Artwork {
-      image_alt: formattedMetadata
+    fragment ArtworkImageBrowserContainer_artwork on Artwork {
       ...ArtworkActions_artwork
+      ...ArtworkImageBrowser_artwork
       image {
         internalID
       }
       images {
         internalID
-        uri: url(version: ["large"])
-        placeholder: resized(width: 30, height: 30, version: "small") {
-          url
-        }
-        aspectRatio: aspectRatio
-        is_zoomable: isZoomable
-        is_default: isDefault
-        deepZoom: deepZoom {
-          Image {
-            xmlns
-            Url
-            Format
-            TileSize
-            Overlap
-            Size {
-              Width
-              Height
-            }
-          }
-        }
       }
     }
   `,
 })
 
-export const ArtworkImageBrowserQueryRenderer = ({
+export const ArtworkImageBrowserContainerQueryRenderer = ({
   artworkID,
 }: {
   artworkID: string
@@ -91,13 +72,13 @@ export const ArtworkImageBrowserQueryRenderer = ({
   const { relayEnvironment } = useContext(SystemContext)
 
   return (
-    <QueryRenderer<ArtworkImageBrowserQuery>
+    <QueryRenderer<ArtworkImageBrowserContainerQuery>
       environment={relayEnvironment}
       variables={{ artworkID }}
       query={graphql`
-        query ArtworkImageBrowserQuery($artworkID: String!) {
+        query ArtworkImageBrowserContainerQuery($artworkID: String!) {
           artwork(id: $artworkID) {
-            ...ArtworkImageBrowser_artwork
+            ...ArtworkImageBrowserContainer_artwork
           }
         }
       `}

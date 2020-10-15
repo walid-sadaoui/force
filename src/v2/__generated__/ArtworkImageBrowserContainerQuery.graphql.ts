@@ -3,27 +3,27 @@
 
 import { ConcreteRequest } from "relay-runtime";
 import { FragmentRefs } from "relay-runtime";
-export type ArtworkImageBrowserQueryVariables = {
+export type ArtworkImageBrowserContainerQueryVariables = {
     artworkID: string;
 };
-export type ArtworkImageBrowserQueryResponse = {
+export type ArtworkImageBrowserContainerQueryResponse = {
     readonly artwork: {
-        readonly " $fragmentRefs": FragmentRefs<"ArtworkImageBrowser_artwork">;
+        readonly " $fragmentRefs": FragmentRefs<"ArtworkImageBrowserContainer_artwork">;
     } | null;
 };
-export type ArtworkImageBrowserQuery = {
-    readonly response: ArtworkImageBrowserQueryResponse;
-    readonly variables: ArtworkImageBrowserQueryVariables;
+export type ArtworkImageBrowserContainerQuery = {
+    readonly response: ArtworkImageBrowserContainerQueryResponse;
+    readonly variables: ArtworkImageBrowserContainerQueryVariables;
 };
 
 
 
 /*
-query ArtworkImageBrowserQuery(
+query ArtworkImageBrowserContainerQuery(
   $artworkID: String!
 ) {
   artwork(id: $artworkID) {
-    ...ArtworkImageBrowser_artwork
+    ...ArtworkImageBrowserContainer_artwork
     id
   }
 }
@@ -61,21 +61,28 @@ fragment ArtworkActions_artwork on Artwork {
   }
 }
 
-fragment ArtworkImageBrowser_artwork on Artwork {
-  image_alt: formattedMetadata
+fragment ArtworkImageBrowserContainer_artwork on Artwork {
   ...ArtworkActions_artwork
+  ...ArtworkImageBrowser_artwork
   image {
     internalID
   }
   images {
     internalID
-    uri: url(version: ["large"])
-    placeholder: resized(width: 30, height: 30, version: "small") {
-      url
+  }
+}
+
+fragment ArtworkImageBrowser_artwork on Artwork {
+  alt: formattedMetadata
+  images {
+    internalID
+    resized(width: 640, height: 640) {
+      src
+      srcSet
+      width
+      height
     }
-    aspectRatio
-    is_zoomable: isZoomable
-    is_default: isDefault
+    isZoomable
     deepZoom {
       Image {
         xmlns
@@ -152,7 +159,14 @@ v5 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "url",
+  "name": "width",
+  "storageKey": null
+},
+v6 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "height",
   "storageKey": null
 };
 return {
@@ -160,7 +174,7 @@ return {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Fragment",
     "metadata": null,
-    "name": "ArtworkImageBrowserQuery",
+    "name": "ArtworkImageBrowserContainerQuery",
     "selections": [
       {
         "alias": null,
@@ -173,7 +187,7 @@ return {
           {
             "args": null,
             "kind": "FragmentSpread",
-            "name": "ArtworkImageBrowser_artwork"
+            "name": "ArtworkImageBrowserContainer_artwork"
           }
         ],
         "storageKey": null
@@ -185,7 +199,7 @@ return {
   "operation": {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Operation",
-    "name": "ArtworkImageBrowserQuery",
+    "name": "ArtworkImageBrowserContainerQuery",
     "selections": [
       {
         "alias": null,
@@ -195,13 +209,6 @@ return {
         "name": "artwork",
         "plural": false,
         "selections": [
-          {
-            "alias": "image_alt",
-            "args": null,
-            "kind": "ScalarField",
-            "name": "formattedMetadata",
-            "storageKey": null
-          },
           (v2/*: any*/),
           (v3/*: any*/),
           (v4/*: any*/),
@@ -234,40 +241,26 @@ return {
             "name": "images",
             "plural": true,
             "selections": [
-              (v5/*: any*/),
-              (v3/*: any*/),
               {
-                "alias": "uri",
-                "args": [
-                  {
-                    "kind": "Literal",
-                    "name": "version",
-                    "value": [
-                      "large"
-                    ]
-                  }
-                ],
+                "alias": null,
+                "args": null,
                 "kind": "ScalarField",
                 "name": "url",
-                "storageKey": "url(version:[\"large\"])"
+                "storageKey": null
               },
+              (v3/*: any*/),
               {
-                "alias": "placeholder",
+                "alias": null,
                 "args": [
                   {
                     "kind": "Literal",
                     "name": "height",
-                    "value": 30
-                  },
-                  {
-                    "kind": "Literal",
-                    "name": "version",
-                    "value": "small"
+                    "value": 640
                   },
                   {
                     "kind": "Literal",
                     "name": "width",
-                    "value": 30
+                    "value": 640
                   }
                 ],
                 "concreteType": "ResizedImageUrl",
@@ -275,29 +268,30 @@ return {
                 "name": "resized",
                 "plural": false,
                 "selections": [
-                  (v5/*: any*/)
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "src",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "srcSet",
+                    "storageKey": null
+                  },
+                  (v5/*: any*/),
+                  (v6/*: any*/)
                 ],
-                "storageKey": "resized(height:30,version:\"small\",width:30)"
+                "storageKey": "resized(height:640,width:640)"
               },
               {
                 "alias": null,
                 "args": null,
                 "kind": "ScalarField",
-                "name": "aspectRatio",
-                "storageKey": null
-              },
-              {
-                "alias": "is_zoomable",
-                "args": null,
-                "kind": "ScalarField",
                 "name": "isZoomable",
-                "storageKey": null
-              },
-              {
-                "alias": "is_default",
-                "args": null,
-                "kind": "ScalarField",
-                "name": "isDefault",
                 "storageKey": null
               },
               {
@@ -469,20 +463,8 @@ return {
                 "name": "url",
                 "storageKey": "url(version:\"larger\")"
               },
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "height",
-                "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "width",
-                "storageKey": null
-              }
+              (v6/*: any*/),
+              (v5/*: any*/)
             ],
             "storageKey": null
           },
@@ -538,6 +520,13 @@ return {
               (v2/*: any*/)
             ],
             "storageKey": null
+          },
+          {
+            "alias": "alt",
+            "args": null,
+            "kind": "ScalarField",
+            "name": "formattedMetadata",
+            "storageKey": null
           }
         ],
         "storageKey": null
@@ -547,11 +536,11 @@ return {
   "params": {
     "id": null,
     "metadata": {},
-    "name": "ArtworkImageBrowserQuery",
+    "name": "ArtworkImageBrowserContainerQuery",
     "operationKind": "query",
-    "text": "query ArtworkImageBrowserQuery(\n  $artworkID: String!\n) {\n  artwork(id: $artworkID) {\n    ...ArtworkImageBrowser_artwork\n    id\n  }\n}\n\nfragment ArtworkActions_artwork on Artwork {\n  ...Save_artwork\n  ...ArtworkSharePanel_artwork\n  artists {\n    name\n    id\n  }\n  date\n  dimensions {\n    cm\n  }\n  href\n  slug\n  image {\n    internalID\n    url(version: \"larger\")\n    height\n    width\n  }\n  is_downloadable: isDownloadable\n  is_hangable: isHangable\n  partner {\n    slug\n    id\n  }\n  title\n  sale {\n    is_closed: isClosed\n    is_auction: isAuction\n    id\n  }\n}\n\nfragment ArtworkImageBrowser_artwork on Artwork {\n  image_alt: formattedMetadata\n  ...ArtworkActions_artwork\n  image {\n    internalID\n  }\n  images {\n    internalID\n    uri: url(version: [\"large\"])\n    placeholder: resized(width: 30, height: 30, version: \"small\") {\n      url\n    }\n    aspectRatio\n    is_zoomable: isZoomable\n    is_default: isDefault\n    deepZoom {\n      Image {\n        xmlns\n        Url\n        Format\n        TileSize\n        Overlap\n        Size {\n          Width\n          Height\n        }\n      }\n    }\n  }\n}\n\nfragment ArtworkSharePanel_artwork on Artwork {\n  href\n  images {\n    url\n  }\n  artworkMeta: meta {\n    share\n  }\n}\n\nfragment Save_artwork on Artwork {\n  id\n  internalID\n  slug\n  is_saved: isSaved\n  title\n}\n"
+    "text": "query ArtworkImageBrowserContainerQuery(\n  $artworkID: String!\n) {\n  artwork(id: $artworkID) {\n    ...ArtworkImageBrowserContainer_artwork\n    id\n  }\n}\n\nfragment ArtworkActions_artwork on Artwork {\n  ...Save_artwork\n  ...ArtworkSharePanel_artwork\n  artists {\n    name\n    id\n  }\n  date\n  dimensions {\n    cm\n  }\n  href\n  slug\n  image {\n    internalID\n    url(version: \"larger\")\n    height\n    width\n  }\n  is_downloadable: isDownloadable\n  is_hangable: isHangable\n  partner {\n    slug\n    id\n  }\n  title\n  sale {\n    is_closed: isClosed\n    is_auction: isAuction\n    id\n  }\n}\n\nfragment ArtworkImageBrowserContainer_artwork on Artwork {\n  ...ArtworkActions_artwork\n  ...ArtworkImageBrowser_artwork\n  image {\n    internalID\n  }\n  images {\n    internalID\n  }\n}\n\nfragment ArtworkImageBrowser_artwork on Artwork {\n  alt: formattedMetadata\n  images {\n    internalID\n    resized(width: 640, height: 640) {\n      src\n      srcSet\n      width\n      height\n    }\n    isZoomable\n    deepZoom {\n      Image {\n        xmlns\n        Url\n        Format\n        TileSize\n        Overlap\n        Size {\n          Width\n          Height\n        }\n      }\n    }\n  }\n}\n\nfragment ArtworkSharePanel_artwork on Artwork {\n  href\n  images {\n    url\n  }\n  artworkMeta: meta {\n    share\n  }\n}\n\nfragment Save_artwork on Artwork {\n  id\n  internalID\n  slug\n  is_saved: isSaved\n  title\n}\n"
   }
 };
 })();
-(node as any).hash = '04b2d8f0bd4762404aaeb70a4559db96';
+(node as any).hash = 'ccdcc5372bacb3615071179b182bf0cc';
 export default node;
