@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react"
 import styled from "styled-components"
-import { Box, Button, Flex, FlexProps, color, themeProps } from "@artsy/palette"
 import { useSystemContext } from "v2/Artsy/SystemContext"
 import { SearchBarQueryRenderer as SearchBar } from "v2/Components/Search/SearchBar"
 import {
@@ -26,6 +25,8 @@ import { NavBarPrimaryLogo } from "./NavBarPrimaryLogo"
 import { NavBarSkipLink } from "./NavBarSkipLink"
 import { LoggedInActionsQueryRenderer as LoggedInActions } from "./LoggedInActions"
 import { NAV_BAR_HEIGHT } from "./constants"
+
+import { Box, Button, Flex, FlexProps, color, themeProps } from "@artsy/palette"
 
 const NavBarContainer = styled(Flex)`
   position: relative;
