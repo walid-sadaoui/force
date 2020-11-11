@@ -53,6 +53,7 @@ module.exports = {
     "@typescript-eslint/no-var-requires": 0,
     "react/display-name": 0,
     "react/prop-types": 0,
+    "react/react-in-jsx-scope": 0,
     "react-hooks/rules-of-hooks": "error",
     "react-hooks/exhaustive-deps": "warn",
     "sort-imports": [

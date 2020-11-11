@@ -9,7 +9,7 @@
     "esModuleInterop": true,
     "experimentalDecorators": true,
     "incremental": true,
-    "jsx": "react",
+    "jsx": "preserve",
     "module": "commonjs",
     "moduleResolution": "node",
     "noUnusedLocals": true,
@@ -29,14 +29,23 @@
       ],
       "v2/*": [
         "./v2/*"
-      ],
+      ]
     },
     "plugins": [
       {
         "name": "typescript-styled-plugin"
       }
     ],
-    "strict": false
+    "strict": false,
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true
   },
   "include": [
     "./src",
