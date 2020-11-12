@@ -185,7 +185,7 @@ export class ArtworkApp extends React.Component<Props> {
       <AppContainer>
         <HorizontalPadding>
           {/* NOTE: react-head automatically moves these tags to the <head> element */}
-          <ArtworkMeta artwork={artwork} />
+          {/* <ArtworkMeta artwork={artwork} /> */}
 
           <Row>
             <Col sm={8}>
@@ -284,16 +284,16 @@ const TrackingWrappedArtworkApp: React.FC<Props> = props => {
   const {
     artwork: { internalID },
   } = props
-  const {
-    match: {
-      location: { pathname, state },
-    },
-  } = useContext(RouterContext)
+  // const {
+  //   match: {
+  //     location: { pathname, state },
+  //   },
+  // } = useContext(RouterContext)
   const { contextPageOwnerSlug, contextPageOwnerType } = useAnalyticsContext()
 
   // Check to see if referrer comes from link interception.
   // @see interceptLinks.ts
-  const referrer = state && state.previousHref
+  // const referrer = state && state.previousHref
   const shouldTrackPageView = useRouteTracking()
 
   return (
@@ -306,8 +306,8 @@ const TrackingWrappedArtworkApp: React.FC<Props> = props => {
     >
       <ArtworkApp
         {...props}
-        routerPathname={pathname}
-        referrer={referrer}
+        // routerPathname={pathname}
+        // referrer={referrer}
         shouldTrackPageView={shouldTrackPageView}
       />
     </AnalyticsContext.Provider>

@@ -1,6 +1,8 @@
-import { useRouter } from "next/router"
 import { initEnvironment } from "next/createEnvironment"
 import { fetchQuery, graphql } from "react-relay"
+import ArtworkAppFragmentContainer from "v2/Apps/Artwork/ArtworkApp"
+import { useQuery } from "relay-hooks"
+import { useRouter } from "next/router"
 
 const query = graphql`
   query routes_ArtworkQuery($artworkID: String!) {
@@ -13,10 +15,20 @@ const query = graphql`
   }
 `
 
-export default function ArtworkApp(props) {
-  const r = useRouter()
-  console.log(props)
-  return <h1>test</h1>
+export default function ArtworkApp() {
+  const router = useRouter()
+  const { error, props } = useQuery(query, {
+    artworkID: router.query.artworkID,
+  })
+
+  if (error) {
+    return <div>{error.message}</div>
+  }
+  if (!props) {
+    return <div>Loading</div>
+  }
+
+  return <ArtworkAppFragmentContainer artwork={props.artwork} />
 }
 
 export async function getServerSideProps(context) {

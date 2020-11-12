@@ -12,7 +12,6 @@ const query = graphql`
 `
 
 export default function ArtistApp(props) {
-  // console.log(props)
   return <h1>test</h1>
 }
 
