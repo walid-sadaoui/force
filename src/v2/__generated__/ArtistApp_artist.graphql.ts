@@ -7,7 +7,7 @@ export type ArtistApp_artist = {
     readonly internalID: string;
     readonly name: string | null;
     readonly slug: string;
-    readonly " $fragmentRefs": FragmentRefs<"ArtistMeta_artist" | "ArtistHeader_artist" | "NavigationTabs_artist">;
+    readonly " $fragmentRefs": FragmentRefs<"ArtistMeta_artist" | "ArtistHeader_artist" | "NavigationTabs_artist" | "Overview_artist" | "Works_artist">;
     readonly " $refType": "ArtistApp_artist";
 };
 export type ArtistApp_artist$data = ArtistApp_artist;
@@ -59,9 +59,19 @@ const node: ReaderFragment = {
       "args": null,
       "kind": "FragmentSpread",
       "name": "NavigationTabs_artist"
+    },
+    {
+      "args": null,
+      "kind": "FragmentSpread",
+      "name": "Overview_artist"
+    },
+    {
+      "args": null,
+      "kind": "FragmentSpread",
+      "name": "Works_artist"
     }
   ],
   "type": "Artist"
 };
-(node as any).hash = '8804872230d49a56826f305d90d76385';
+(node as any).hash = '43a29e54cffd62e0a95ac296c8d4ba62';
 export default node;

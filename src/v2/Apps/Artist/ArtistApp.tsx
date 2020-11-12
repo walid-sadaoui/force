@@ -29,6 +29,12 @@ import {
   AnalyticsContext,
   useAnalyticsContext,
 } from "v2/Artsy/Analytics/AnalyticsContext"
+import OverviewRouteFragmentContainer from "./Routes/Overview"
+import { useRouter } from "next/router"
+import { WorksForSaleRailFragmentContainer } from "./Routes/Overview/Components/WorksForSaleRail"
+import WorksRouteFragmentContainer from "./Routes/Works"
+
+import Link from "next/link"
 
 export interface ArtistAppProps {
   artist: ArtistApp_artist
@@ -41,7 +47,12 @@ export interface ArtistAppProps {
 export const ArtistApp: React.FC<ArtistAppProps> = props => {
   const { artist, children } = props
   const { trackEvent } = useTracking()
-  const route = findCurrentRoute(props.match)
+  // const route = findCurrentRoute(props.match)
+  const { query } = useRouter()
+  const route = {
+    displayFullPage: false,
+    displayNavigationTabs: true,
+  }
   let HorizontalPaddingArea:
     | typeof HorizontalPadding
     | typeof Box = HorizontalPadding
@@ -52,9 +63,11 @@ export const ArtistApp: React.FC<ArtistAppProps> = props => {
     HorizontalPaddingArea = Box
   }
 
+  console.log(query.artistID[1])
+
   return (
     <AppContainer maxWidth={maxWidth}>
-      <ArtistMeta artist={artist} />
+      {/* <ArtistMeta artist={artist} /> */}
       {route.displayNavigationTabs && (
         <Row>
           <Col>
@@ -72,7 +85,20 @@ export const ArtistApp: React.FC<ArtistAppProps> = props => {
             {route.displayNavigationTabs ? (
               <>
                 <Spacer mb={3} />
-                <NavigationTabs artist={artist} />
+                <Flex>
+                  <Link href={query.artistID[0]}>Overview</Link>
+                  <Spacer mx={1} />
+                  <Link href={query.artistID[0] + "/works-for-sale"}>
+                    Works for sale
+                  </Link>
+                </Flex>
+
+                {query.artistID[1] ? (
+                  <WorksRouteFragmentContainer artist={artist} />
+                ) : (
+                  <OverviewRouteFragmentContainer artist={artist} />
+                )}
+                {/* <NavigationTabs artist={artist} /> */}
                 <Spacer mb={2} />
               </>
             ) : (
@@ -180,6 +206,8 @@ export const ArtistAppFragmentContainer = createFragmentContainer(
         ...ArtistMeta_artist
         ...ArtistHeader_artist
         ...NavigationTabs_artist
+        ...Overview_artist
+        ...Works_artist
       }
     `,
   }

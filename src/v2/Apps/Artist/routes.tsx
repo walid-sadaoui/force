@@ -90,6 +90,7 @@ export const routes: RouteConfig[] = [
         artist(id: $artistID) @principalField {
           ...ArtistApp_artist
           ...routes_Artist @relay(mask: false)
+          ...Overview_artist
         }
       }
     `,

@@ -155,8 +155,7 @@ export class OverviewRoute extends React.Component<OverviewRouteProps, {}> {
     }
 
     const { artist } = this.props
-    const showArtistInsights =
-      showMarketInsights(this.props.artist) || artist.insights.length > 0
+    const showArtistInsights = false // showMarketInsights(this.props.artist) || artist.insights.length > 0
     const showArtistBio = Boolean(artist.biographyBlurb.text)
     const showRelatedCategories =
       get(artist, a => a.related.genes.edges.length, 0) > 0
