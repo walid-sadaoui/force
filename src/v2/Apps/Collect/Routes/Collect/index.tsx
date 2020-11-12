@@ -57,7 +57,7 @@ export const CollectApp: React.FC<CollectAppProps> = ({
   return (
     <AppContainer>
       <FrameWithRecentlyViewed>
-        <Title>{title}</Title>
+        {/* <Title>{title}</Title>
         <Meta property="og:url" content={`${sd.APP_URL}/collect`} />
         <Meta
           property="og:image"
@@ -66,11 +66,11 @@ export const CollectApp: React.FC<CollectAppProps> = ({
         <Meta name="description" content={description} />
         <Meta property="og:description" content={description} />
         <Meta property="twitter:description" content={description} />
-        <Link rel="canonical" href={canonicalHref} />
+        <Link rel="canonical" href={canonicalHref} /> */}
 
-        <BreadCrumbList items={items} />
+        {/* <BreadCrumbList items={items} /> */}
 
-        {filterArtworks && <SeoProductsForArtworks artworks={filterArtworks} />}
+        {/* {filterArtworks && <SeoProductsForArtworks artworks={filterArtworks} />} */}
 
         <Box mt={3}>
           <Text variant="largeTitle">

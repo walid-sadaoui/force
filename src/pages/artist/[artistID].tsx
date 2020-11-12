@@ -1,4 +1,3 @@
-import { useRouter } from "next/router"
 import { initEnvironment } from "next/createEnvironment"
 import { fetchQuery, graphql } from "react-relay"
 
@@ -19,7 +18,6 @@ export async function getServerSideProps(context) {
   const { environment, relaySSR } = initEnvironment()
   const { artistID } = context.query
 
-  // @ts-ignore
   await fetchQuery(environment, query, { artistID })
   const relayData = (await relaySSR.getCache())?.[0]
   const data = !relayData ? null : [[relayData[0], relayData[1].json]]
