@@ -21,24 +21,24 @@ const Boot = track(null, {
     <Theme>
       <SystemContextProvider relayEnvironment={environment}>
         <AnalyticsContext.Provider value={{}}>
-          {/* <ErrorBoundary> */}
-          <MediaContextProvider>
-            <ResponsiveProvider
-              mediaQueries={themeProps.mediaQueries}
-              // initialMatchingMediaQueries={onlyMatchMediaQueries as any}
-            >
-              <Grid fluid maxWidth="100%">
-                <RelayEnvironmentProvider environment={environment}>
-                  <FocusVisible />
-                  <GlobalStyles />
-                  <NextAppShell>
-                    <Component {...pageProps} />
-                  </NextAppShell>
-                </RelayEnvironmentProvider>
-              </Grid>
-            </ResponsiveProvider>
-          </MediaContextProvider>
-          {/* </ErrorBoundary> */}
+          <ErrorBoundary>
+            <MediaContextProvider>
+              <ResponsiveProvider
+                mediaQueries={themeProps.mediaQueries}
+                // initialMatchingMediaQueries={onlyMatchMediaQueries as any}
+              >
+                <Grid fluid maxWidth="100%">
+                  <RelayEnvironmentProvider environment={environment}>
+                    <FocusVisible />
+                    <GlobalStyles />
+                    <NextAppShell>
+                      <Component {...pageProps} />
+                    </NextAppShell>
+                  </RelayEnvironmentProvider>
+                </Grid>
+              </ResponsiveProvider>
+            </MediaContextProvider>
+          </ErrorBoundary>
         </AnalyticsContext.Provider>
       </SystemContextProvider>
     </Theme>
@@ -46,62 +46,3 @@ const Boot = track(null, {
 })
 
 export default Boot
-
-// export default function App({ Component, pageProps }) {
-//   return (
-//     <Theme>
-//       <HeadProvider headTags={[]}>
-//         <SystemContextProvider>
-//           <AnalyticsContext.Provider value={{}}>
-//             <ErrorBoundary>
-//               <MediaContextProvider>
-//                 <ResponsiveProvider
-//                   mediaQueries={themeProps.mediaQueries}
-//                   // initialMatchingMediaQueries={onlyMatchMediaQueries as any}
-//                 >
-//                   <Grid fluid maxWidth="100%">
-//                     <RelayEnvironmentProvider
-//                       environment={createEnvironment(pageProps.relayData)}
-//                     >
-//                       <FocusVisible />
-//                       <GlobalStyles />
-//                       <Component {...pageProps} />
-//                     </RelayEnvironmentProvider>
-//                   </Grid>
-//                 </ResponsiveProvider>
-//               </MediaContextProvider>
-//             </ErrorBoundary>
-//           </AnalyticsContext.Provider>
-//         </SystemContextProvider>
-//       </HeadProvider>
-//     </Theme>
-//   )
-// }
-
-/*
-<Theme>
-      <AnalyticsContext.Provider value={context?.analytics}>
-        <ErrorBoundary>
-          <MediaContextProvider onlyMatch={onlyMatchMediaQueries}>
-            <ResponsiveProvider
-              mediaQueries={themeProps.mediaQueries}
-              initialMatchingMediaQueries={onlyMatchMediaQueries as any}
-            >
-              <Grid fluid maxWidth="100%">
-                <GlobalStyles />
-                <FocusVisible />
-                {children}
-                {process.env.NODE_ENV === "development" && (
-                  <BreakpointVisualizer />
-                )}
-              </Grid>
-            </ResponsiveProvider>
-          </MediaContextProvider>
-        </ErrorBoundary>
-      </AnalyticsContext.Provider>
-    </SystemContextProvider>
-  </StateProvider>
-</HeadProvider>
-</Theme>
-
-*/
