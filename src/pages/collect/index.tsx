@@ -76,9 +76,9 @@ function initializeVariablesWithFilterState(params, props) {
   }
 
   const state = {
-    sort: "-decayed_merch",
     ...paramsToCamelCase(initialFilterState),
     ...params,
+    sort: "-decayed_merch",
   }
 
   return state
@@ -88,6 +88,7 @@ export default function CollectApp() {
   const router = useRouter()
   const { error, props } = useQuery(query, {
     artworkID: router.query.artworkID,
+    sort: "-decayed_merch",
   })
 
   if (error) {

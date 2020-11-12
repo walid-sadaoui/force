@@ -480,14 +480,14 @@ const StaticSearchContainer: React.FC<{ searchQuery: string } & BoxProps> = ({
 }) => {
   return (
     <>
-      <Box display={["block", "none"]} {...rest}>
+      <Box display={["block", "none"]} {...rest} width="100%">
         <SearchInputContainer
           placeholder={searchQuery || PLACEHOLDER_XS}
           defaultValue={searchQuery}
         />
       </Box>
 
-      <Box display={["none", "block"]} {...rest}>
+      <Box display={["none", "block"]} {...rest} width="100%">
         <SearchInputContainer
           placeholder={searchQuery || PLACEHOLDER}
           defaultValue={searchQuery}

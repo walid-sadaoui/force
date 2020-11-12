@@ -17,6 +17,9 @@ export default {
   createEnvironment: relayData => {
     if (storeEnvironment) return storeEnvironment
 
+    const relaySSRMiddleware = new RelaySSR(relayData)
+    relaySSRMiddleware.debug = true
+
     storeEnvironment = new Environment({
       store,
       network: new RelayNetworkLayer([
@@ -25,7 +28,7 @@ export default {
           size: 100,
           ttl: 60 * 1000,
         }),
-        new RelaySSR(relayData).getMiddleware({
+        relaySSRMiddleware.getMiddleware({
           lookup: false,
         }),
         urlMiddleware({

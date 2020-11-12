@@ -1,5 +1,8 @@
 import Document, { Head, Html, Main, NextScript } from "next/document"
 import { ServerStyleSheet } from "styled-components"
+import { createMediaStyle } from "v2/Utils/Responsive"
+
+const mediaStyle = createMediaStyle()
 
 class RootDocument extends Document {
   static async getInitialProps(ctx) {
@@ -66,6 +69,7 @@ class RootDocument extends Document {
             type="font/woff2"
             crossOrigin="crossorigin"
           />
+          <style type="text/css">${mediaStyle}</style>
         </Head>
 
         <body>

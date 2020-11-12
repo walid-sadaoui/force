@@ -31,7 +31,6 @@ import {
 } from "v2/Artsy/Analytics/AnalyticsContext"
 import OverviewRouteFragmentContainer from "./Routes/Overview"
 import { useRouter } from "next/router"
-import { WorksForSaleRailFragmentContainer } from "./Routes/Overview/Components/WorksForSaleRail"
 import WorksRouteFragmentContainer from "./Routes/Works"
 
 import Link from "next/link"
@@ -62,8 +61,6 @@ export const ArtistApp: React.FC<ArtistAppProps> = props => {
     maxWidth = "100%"
     HorizontalPaddingArea = Box
   }
-
-  console.log(query.artistID[1])
 
   return (
     <AppContainer maxWidth={maxWidth}>
