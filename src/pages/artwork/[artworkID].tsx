@@ -31,9 +31,10 @@ export default function ArtworkApp() {
   return <ArtworkAppFragmentContainer artwork={props.artwork} />
 }
 
-export async function getServerSideProps(context) {
+// Or, getServerSideProps
+export async function getStaticProps(context) {
   const { environment, relaySSR } = initEnvironment()
-  const { artworkID } = context.query
+  const artworkID = context?.query?.artworkID ?? context?.params?.artworkID
 
   // @ts-ignore
   await fetchQuery(environment, query, { artworkID })
@@ -45,4 +46,40 @@ export async function getServerSideProps(context) {
       relayData: data,
     },
   }
+}
+
+export async function getStaticPaths() {
+  const paths = getArtworkIDs()
+  return {
+    paths,
+    fallback: true,
+  }
+}
+
+function getArtworkIDs() {
+  return [
+    "agnes-martin-praise-25",
+    "agnes-martin-on-a-clear-day-number-17-1",
+    "agnes-martin-untitled-i-1",
+    "agnes-martin-on-a-clear-day-number-22-2",
+    "julie-mehretu-stadia-ii",
+    "julie-mehretu-easy-dark",
+    "julie-mehretu-not-quite-armageddon",
+    "eddie-martinez-untitled-300",
+    "eddie-martinez-beginner-mind-7",
+    "eddie-martinez-untitled-295",
+    "otis-kwame-kye-quaicoe-wiyaala",
+    "otis-kwame-kye-quaicoe-redrose-and-yellow-beard",
+    "otis-kwame-kye-quaicoe-amanda-grace-in-poka-dot-turtleneck",
+    "otis-kwame-kye-quaicoe-amanda-grace-in-poka-dot-turtleneck",
+    "amber-goldhammer-little-monsters-will-follow",
+    "robert-lebsack-my-heart-used-to-dream-of",
+    "robert-lebsack-i-feel-you-forgetting",
+  ].map(artwork => {
+    return {
+      params: {
+        artworkID: artwork,
+      },
+    }
+  })
 }

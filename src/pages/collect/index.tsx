@@ -120,9 +120,8 @@ export default function CollectApp() {
   )
 }
 
-// getStaticProps
-
-export async function getServerSideProps(context) {
+// Or, getServerSideProps
+export async function getStaticProps(context) {
   const { environment, relaySSR } = initEnvironment()
   const variables = initializeVariablesWithFilterState({}, {})
 

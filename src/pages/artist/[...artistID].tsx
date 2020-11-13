@@ -16,7 +16,7 @@ const query = graphql`
 export default function ArtistApp() {
   const router = useRouter()
   const { error, props } = useQuery(query, {
-    artistID: router.query.artistID[0],
+    artistID: router.query?.artistID?.[0],
   })
 
   if (error) {
@@ -37,9 +37,10 @@ export default function ArtistApp() {
   )
 }
 
-export async function getServerSideProps(context) {
+// Or, getServerSideProps / getStaticProps
+export async function getStaticProps(context) {
   const { environment, relaySSR } = initEnvironment()
-  const { artistID } = context.query
+  const artistID = context?.query?.artistID ?? context?.params?.artistID
 
   await fetchQuery(environment, query, { artistID: artistID[0] })
   const relayData = (await relaySSR.getCache())?.[0]
@@ -50,4 +51,47 @@ export async function getServerSideProps(context) {
       relayData: data,
     },
   }
+}
+
+export async function getStaticPaths() {
+  const paths = getArtistIDs()
+  return {
+    paths,
+    fallback: true,
+  }
+}
+
+function getArtistIDs() {
+  return [
+    {
+      slug: "amber-goldhammer",
+    },
+    {
+      slug: "agnes-martin",
+    },
+    {
+      slug: "julie-mehretu",
+    },
+    {
+      slug: "eddie-martinez",
+    },
+    {
+      slug: "otis-kwame-kye-quaicoe",
+    },
+    {
+      slug: "lee-ufan",
+    },
+    {
+      slug: "zanele-muholi",
+    },
+    {
+      slug: "massimo-vitali/",
+    },
+  ].map(artist => {
+    return {
+      params: {
+        artistID: [artist.slug, "works-for-sale"],
+      },
+    }
+  })
 }
