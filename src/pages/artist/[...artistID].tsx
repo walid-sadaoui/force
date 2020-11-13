@@ -20,9 +20,10 @@ export default function ArtistApp() {
   })
 
   if (error) {
-    return <div>{error.message}</div>
+    console.error("Error rendering:", error)
+    return null
   }
-  if (!props) {
+  if (router.isFallback || !props) {
     return <div>Loading</div>
   }
 
@@ -57,7 +58,7 @@ export async function getStaticPaths() {
   const paths = getArtistIDs()
   return {
     paths,
-    fallback: true,
+    fallback: "blocking",
   }
 }
 

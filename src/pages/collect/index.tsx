@@ -92,9 +92,10 @@ export default function CollectApp() {
   })
 
   if (error) {
-    return <div>{error.message}</div>
+    console.error("Error rendering:", error)
+    return null
   }
-  if (!props) {
+  if (router.isFallback || !props) {
     return <div>Loading</div>
   }
 
