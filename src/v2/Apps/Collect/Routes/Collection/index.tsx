@@ -33,6 +33,7 @@ import { updateUrl } from "v2/Components/v2/ArtworkFilter/Utils/urlBuilder"
 import { TrackingProp } from "react-tracking"
 import { clickedMainArtworkGrid } from "@artsy/cohesion"
 import { ErrorPage } from "v2/Components/ErrorPage"
+import { useRouter } from "next/router"
 
 interface CollectionAppProps extends SystemContextProps, AnalyticsContextProps {
   collection: Collection_collection
@@ -44,7 +45,7 @@ interface CollectionAppProps extends SystemContextProps, AnalyticsContextProps {
 export const CollectionApp: React.FC<CollectionAppProps> = props => {
   const {
     collection,
-    match: { location },
+    // match: { location },
     relay,
     tracking,
   } = props
@@ -53,6 +54,8 @@ export const CollectionApp: React.FC<CollectionAppProps> = props => {
     contextPageOwnerType,
     contextPageOwnerSlug,
   } = useAnalyticsContext()
+
+  const router = useRouter()
 
   if (!collection) return <ErrorPage code={404} />
 
@@ -82,7 +85,7 @@ export const CollectionApp: React.FC<CollectionAppProps> = props => {
 
   return (
     <>
-      <Title>{`${title} - For Sale on Artsy`}</Title>
+      {/* <Title>{`${title} - For Sale on Artsy`}</Title>
       <Meta name="description" content={metadataDescription} />
       <Meta property="og:url" content={collectionHref} />
       <Meta property="og:image" content={socialImage} />
@@ -106,7 +109,7 @@ export const CollectionApp: React.FC<CollectionAppProps> = props => {
           collectionURL={collectionHref}
           collectionName={title}
         />
-      )}
+      )} */}
       <AppContainer maxWidth="100%">
         <CollectionHeader
           collection={collection}
@@ -122,7 +125,7 @@ export const CollectionApp: React.FC<CollectionAppProps> = props => {
             )}
             <Box>
               <ArtworkFilterContextProvider
-                filters={location.query}
+                filters={router.query}
                 sortOptions={[
                   { value: "-decayed_merch", text: "Default" },
                   {
@@ -146,15 +149,15 @@ export const CollectionApp: React.FC<CollectionAppProps> = props => {
                 }
                 onChange={updateUrl}
                 onArtworkBrickClick={artwork => {
-                  tracking.trackEvent(
-                    clickedMainArtworkGrid({
-                      contextPageOwnerType,
-                      contextPageOwnerId,
-                      contextPageOwnerSlug,
-                      destinationPageOwnerId: artwork.internalID,
-                      destinationPageOwnerSlug: artwork.slug,
-                    })
-                  )
+                  // tracking.trackEvent(
+                  //   clickedMainArtworkGrid({
+                  //     contextPageOwnerType,
+                  //     contextPageOwnerId,
+                  //     contextPageOwnerSlug,
+                  //     destinationPageOwnerId: artwork.internalID,
+                  //     destinationPageOwnerSlug: artwork.slug,
+                  //   })
+                  // )
                 }}
               >
                 <BaseArtworkFilter

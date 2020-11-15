@@ -24,7 +24,7 @@ export const CollectionsHubsNav: FC<CollectionsHubsNavProps> = props => {
       ]}
       gridGap={20}
     >
-      {props.marketingHubCollections.slice(0, 6).map(hub => (
+      {props.marketingHubCollections.slice(1, 6).map(hub => (
         <ImageLink
           to={`/collection/${hub.slug}`}
           src={resize(hub.thumbnail, { width: 357, height: 175 })}

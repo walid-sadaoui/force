@@ -7,7 +7,7 @@ import { CollectionDefaultHeaderFragmentContainer as CollectionDefaultHeader } f
 import { HorizontalPadding } from "v2/Apps/Components/HorizontalPadding"
 import { unica } from "v2/Assets/Fonts"
 import { FollowArtistButtonFragmentContainer as FollowArtistButton } from "v2/Components/FollowButton/FollowArtistButton"
-import { Link } from "found"
+// import { Link } from "found"
 import { filter, take } from "lodash"
 import React, { FC } from "react"
 import { createFragmentContainer, graphql } from "react-relay"
@@ -16,6 +16,8 @@ import { slugify } from "underscore.string"
 import { resize } from "v2/Utils/resizer"
 import { Responsive } from "v2/Utils/Responsive"
 import { FeaturedArtists } from "./FeaturedArtists"
+
+import Link from "next/link"
 
 export interface Props {
   collection: Header_collection
@@ -184,8 +186,8 @@ export const CollectionHeader: FC<Props> = ({ artworks, collection }) => {
                   <HorizontalPadding>
                     <MetaContainer my={2}>
                       <BreadcrumbContainer mt={[2, 0]}>
-                        <Link to="/collect">All works</Link> /{" "}
-                        <Link to={categoryTarget}>{collection.category}</Link>
+                        <Link href="/collect">All works</Link> /{" "}
+                        <Link href={categoryTarget}>{collection.category}</Link>
                       </BreadcrumbContainer>
 
                       <Spacer mt={1} />
