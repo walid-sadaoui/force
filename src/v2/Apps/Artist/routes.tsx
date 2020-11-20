@@ -1,3 +1,4 @@
+/* eslint-disable sort-keys-fix/sort-keys-fix */
 import loadable from "@loadable/component"
 import { Redirect, RedirectException, RouteConfig } from "found"
 import React from "react"
@@ -235,7 +236,7 @@ export const routes: RouteConfig[] = [
           AuctionResultsRoute.preload()
         },
         displayNavigationTabs: true,
-        ignoreScrollBehavior: true,
+        ignoreScrollBehavior: false,
         query: graphql`
           query routes_AuctionResultsQuery($artistID: String!) {
             artist(id: $artistID) {
