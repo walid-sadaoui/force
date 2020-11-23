@@ -11,24 +11,22 @@ const WebpackManifestPlugin = require("webpack-manifest-plugin")
 const LoadablePlugin = require("@loadable/webpack-plugin")
 
 export const clientNovoProductionConfig = {
-  stats: "normal",
-  parallelism: 100,
-  mode: env.webpackDebug ? "development" : env.nodeEnv,
   devtool: "source-map",
   entry: {
     "artsy-novo": [path.resolve(process.cwd(), "src/novo/src/client.tsx")],
   },
-  output: {
-    filename: "novo-[name].js",
-    path: path.resolve(basePath, "public/assets-novo"),
-    publicPath: "/assets-novo/",
+  externals: {
+    // Don't bundle modules and consider them external
+    redis: "redis",
+    request: "request",
   },
+  mode: env.webpackDebug ? "development" : env.nodeEnv,
   module: {
     rules: [
       {
-        test: /\.coffee$/,
-        include: path.resolve(basePath, "src"),
         exclude: /(node_modules)/,
+        include: path.resolve(basePath, "src"),
+        test: /\.coffee$/,
         use: [
           {
             loader: "cache-loader",
@@ -40,8 +38,8 @@ export const clientNovoProductionConfig = {
         ],
       },
       {
-        test: /\.(jade|pug)$/,
         include: path.resolve(basePath, "src"),
+        test: /\.(jade|pug)$/,
         use: [
           {
             loader: "pug-loader",
@@ -53,9 +51,9 @@ export const clientNovoProductionConfig = {
         ],
       },
       {
-        test: /(\.(js|ts)x?$)/,
-        include: path.resolve(basePath, "src"),
         exclude: /(node_modules)/,
+        include: path.resolve(basePath, "src"),
+        test: /(\.(js|ts)x?$)/,
         use: [
           {
             loader: "babel-loader",
@@ -68,12 +66,99 @@ export const clientNovoProductionConfig = {
       },
       // ESM support. See: https://github.com/apollographql/react-apollo/issues/1737#issuecomment-371178602
       {
-        type: "javascript/auto",
         test: /\.mjs$/,
+        type: "javascript/auto",
         use: [],
       },
     ],
   },
+  optimization: {
+    minimize: !env.webpackDebug,
+
+    minimizer: [
+      new TerserPlugin({
+        cache: false,
+        parallel: env.onCi ? env.webpackCiCpuLimit : true, // Only use 4 cpus (default) in CircleCI, by default it will try using 36 and OOM
+        sourceMap: true, // Must be set to true if using source-maps in production
+      }),
+    ],
+    // Extract webpack runtime code into it's own file
+    runtimeChunk: "single",
+    splitChunks: {
+      cacheGroups: {
+        "arsty-common": {
+          name: "artsy-common",
+          chunks: "all",
+          test: /.*src[\\/]/,
+          minChunks: 5,
+          enforce: true,
+          minSize: 0,
+          reuseExistingChunk: true,
+        },
+        artsy: {
+          name: "artsy",
+          chunks: "all",
+          test: /.*node_modules[\\/](@artsy)[\\/]/,
+          minChunks: 1,
+          enforce: true,
+          minSize: 0,
+          reuseExistingChunk: true,
+        },
+        "common-backbone": {
+          chunks: "all",
+          name: "common-backbone",
+          minChunks: 1,
+          test: /.*node_modules[\\/](backbone.*)[\\/]/,
+          enforce: true,
+          minSize: 0,
+          reuseExistingChunk: true,
+        },
+        "common-jquery": {
+          chunks: "all",
+          name: "common-jquery",
+          minChunks: 1,
+          test: /.*node_modules[\\/](jquery.*)[\\/]/,
+          enforce: true,
+          minSize: 0,
+          reuseExistingChunk: true,
+        },
+        "common-react": {
+          chunks: "all",
+          name: "common-react",
+          minChunks: 1,
+          test: /.*node_modules[\\/](react|react-dom)[\\/]/,
+          enforce: true,
+          minSize: 0,
+          reuseExistingChunk: true,
+        },
+        "common-utility": {
+          chunks: "all",
+          name: "common-utility",
+          minChunks: 1,
+          test: /.*node_modules[\\/](lodash.*|moment.*)[\\/]/,
+          enforce: true,
+          minSize: 0,
+          reuseExistingChunk: true,
+        },
+        commons: {
+          chunks: "all",
+          name: "common",
+          minChunks: 2,
+          test: /.*node_modules[\\/](?!(@artsy[\\/]|react[\\/]|react-dom[\\/]|backbone.*[\\/]|lodash.*[\\/]|moment.*[\\/]|jquery.*[\\/]))/,
+          enforce: true,
+          minSize: 0,
+          reuseExistingChunk: true,
+        },
+      },
+      maxInitialRequests: Infinity,
+    },
+  },
+  output: {
+    filename: "novo-[name].js",
+    path: path.resolve(basePath, "public/assets-novo"),
+    publicPath: "/assets-novo/",
+  },
+  parallelism: 100,
   plugins: [
     new webpack.DefinePlugin({
       "process.env": {
@@ -94,9 +179,9 @@ export const clientNovoProductionConfig = {
     new webpack.ProvidePlugin({
       $: "jquery",
       jQuery: "jquery",
-      "window.jQuery": "jquery",
       jade: "jade/runtime.js",
       waypoints: "jquery-waypoints/waypoints.js",
+      "window.jQuery": "jquery",
     }),
 
     /**
@@ -107,10 +192,10 @@ export const clientNovoProductionConfig = {
      * we (may) need to revist once we upgrade to Webpack 5.
      */
     new RetryChunkLoadPlugin({
-      maxRetries: 5,
       cacheBust: `function() {
         return "cache-bust=" + Date.now();
       }`,
+      maxRetries: 5,
     }),
     new LoadablePlugin({
       filename: "loadable-novo-stats.json",
@@ -118,8 +203,8 @@ export const clientNovoProductionConfig = {
     }),
     new HashedModuleIdsPlugin(),
     new WebpackManifestPlugin({
-      fileName: path.resolve(basePath, "manifest-novo.json"),
       basePath: "/assets-novo/",
+      fileName: path.resolve(basePath, "manifest-novo.json"),
       seed: env.isProduction ? getCSSManifest() : {},
     }),
   ],
@@ -127,11 +212,11 @@ export const clientNovoProductionConfig = {
     alias: {
       "jquery.ui.widget": "blueimp-file-upload/js/vendor/jquery.ui.widget.js",
 
+      react: require.resolve("react"),
       // The following packages need to be resolved to the host app (force) to get
       // around issues involving `yarn link` and multiple instances. A  similar
       // configuration has been setup for SSR in `src/index`, via `require-control`.
       "styled-components": require.resolve("styled-components"),
-      react: require.resolve("react"),
     },
     extensions: [
       ".mjs",
@@ -147,89 +232,5 @@ export const clientNovoProductionConfig = {
     modules: [path.resolve(basePath, "src"), "node_modules"],
     symlinks: false,
   },
-  optimization: {
-    // Extract webpack runtime code into it's own file
-    runtimeChunk: "single",
-    minimize: !env.webpackDebug,
-    minimizer: [
-      new TerserPlugin({
-        cache: false,
-        parallel: env.onCi ? env.webpackCiCpuLimit : true, // Only use 4 cpus (default) in CircleCI, by default it will try using 36 and OOM
-        sourceMap: true, // Must be set to true if using source-maps in production
-      }),
-    ],
-    splitChunks: {
-      maxInitialRequests: Infinity,
-      cacheGroups: {
-        artsy: {
-          test: /.*node_modules[\\/](@artsy)[\\/]/,
-          name: "artsy",
-          chunks: "all",
-          minSize: 0,
-          minChunks: 1,
-          reuseExistingChunk: true,
-          enforce: true,
-        },
-        "arsty-common": {
-          test: /.*src[\\/]/,
-          name: "artsy-common",
-          chunks: "all",
-          minSize: 0,
-          minChunks: 5,
-          reuseExistingChunk: true,
-          enforce: true,
-        },
-        "common-backbone": {
-          test: /.*node_modules[\\/](backbone.*)[\\/]/,
-          name: "common-backbone",
-          chunks: "all",
-          minSize: 0,
-          minChunks: 1,
-          reuseExistingChunk: true,
-          enforce: true,
-        },
-        "common-jquery": {
-          test: /.*node_modules[\\/](jquery.*)[\\/]/,
-          name: "common-jquery",
-          chunks: "all",
-          minSize: 0,
-          minChunks: 1,
-          reuseExistingChunk: true,
-          enforce: true,
-        },
-        "common-react": {
-          test: /.*node_modules[\\/](react|react-dom)[\\/]/,
-          name: "common-react",
-          chunks: "all",
-          minSize: 0,
-          minChunks: 1,
-          reuseExistingChunk: true,
-          enforce: true,
-        },
-        "common-utility": {
-          test: /.*node_modules[\\/](lodash.*|moment.*)[\\/]/,
-          name: "common-utility",
-          chunks: "all",
-          minSize: 0,
-          minChunks: 1,
-          reuseExistingChunk: true,
-          enforce: true,
-        },
-        commons: {
-          test: /.*node_modules[\\/](?!(@artsy[\\/]|react[\\/]|react-dom[\\/]|backbone.*[\\/]|lodash.*[\\/]|moment.*[\\/]|jquery.*[\\/]))/,
-          name: "common",
-          chunks: "all",
-          minSize: 0,
-          minChunks: 2,
-          reuseExistingChunk: true,
-          enforce: true,
-        },
-      },
-    },
-  },
-  externals: {
-    // Don't bundle modules and consider them external
-    redis: "redis",
-    request: "request",
-  },
+  stats: "normal",
 }
