@@ -1,14 +1,14 @@
 // @ts-check
 
-const { basePath, env } = require("../utils/env")
-const { getCSSManifest } = require("../utils/getCSSManifest")
 const { HashedModuleIdsPlugin } = require("webpack")
 const { RetryChunkLoadPlugin } = require("webpack-retry-chunk-load-plugin")
+const HtmlWebpackPlugin = require("html-webpack-plugin")
+const LoadablePlugin = require("@loadable/webpack-plugin")
 const path = require("path")
 const TerserPlugin = require("terser-webpack-plugin")
 const webpack = require("webpack")
 const WebpackManifestPlugin = require("webpack-manifest-plugin")
-const LoadablePlugin = require("@loadable/webpack-plugin")
+const { basePath, env } = require("../utils/env")
 
 export const clientNovoProductionConfig = {
   devtool: "source-map",
@@ -16,7 +16,6 @@ export const clientNovoProductionConfig = {
     "artsy-novo": [path.resolve(process.cwd(), "src/novo/src/client.tsx")],
   },
   externals: {
-    // Don't bundle modules and consider them external
     redis: "redis",
     request: "request",
   },
@@ -64,7 +63,6 @@ export const clientNovoProductionConfig = {
           },
         ],
       },
-      // ESM support. See: https://github.com/apollographql/react-apollo/issues/1737#issuecomment-371178602
       {
         test: /\.mjs$/,
         type: "javascript/auto",
@@ -87,74 +85,74 @@ export const clientNovoProductionConfig = {
     splitChunks: {
       cacheGroups: {
         "arsty-common": {
-          name: "artsy-common",
           chunks: "all",
-          test: /.*src[\\/]/,
-          minChunks: 5,
           enforce: true,
+          minChunks: 5,
           minSize: 0,
+          name: "artsy-common",
           reuseExistingChunk: true,
+          test: /.*src[\\/]/,
         },
         artsy: {
-          name: "artsy",
           chunks: "all",
-          test: /.*node_modules[\\/](@artsy)[\\/]/,
-          minChunks: 1,
           enforce: true,
+          minChunks: 1,
           minSize: 0,
+          name: "artsy",
           reuseExistingChunk: true,
+          test: /.*node_modules[\\/](@artsy)[\\/]/,
         },
         "common-backbone": {
           chunks: "all",
-          name: "common-backbone",
-          minChunks: 1,
-          test: /.*node_modules[\\/](backbone.*)[\\/]/,
           enforce: true,
+          minChunks: 1,
           minSize: 0,
+          name: "common-backbone",
           reuseExistingChunk: true,
+          test: /.*node_modules[\\/](backbone.*)[\\/]/,
         },
         "common-jquery": {
           chunks: "all",
-          name: "common-jquery",
-          minChunks: 1,
-          test: /.*node_modules[\\/](jquery.*)[\\/]/,
           enforce: true,
+          minChunks: 1,
           minSize: 0,
+          name: "common-jquery",
           reuseExistingChunk: true,
+          test: /.*node_modules[\\/](jquery.*)[\\/]/,
         },
         "common-react": {
           chunks: "all",
-          name: "common-react",
-          minChunks: 1,
-          test: /.*node_modules[\\/](react|react-dom)[\\/]/,
           enforce: true,
+          minChunks: 1,
           minSize: 0,
+          name: "common-react",
           reuseExistingChunk: true,
+          test: /.*node_modules[\\/](react|react-dom)[\\/]/,
         },
         "common-utility": {
           chunks: "all",
-          name: "common-utility",
-          minChunks: 1,
-          test: /.*node_modules[\\/](lodash.*|moment.*)[\\/]/,
           enforce: true,
+          minChunks: 1,
           minSize: 0,
+          name: "common-utility",
           reuseExistingChunk: true,
+          test: /.*node_modules[\\/](lodash.*|moment.*|luxon.*)[\\/]/,
         },
         commons: {
           chunks: "all",
-          name: "common",
-          minChunks: 2,
-          test: /.*node_modules[\\/](?!(@artsy[\\/]|react[\\/]|react-dom[\\/]|backbone.*[\\/]|lodash.*[\\/]|moment.*[\\/]|jquery.*[\\/]))/,
           enforce: true,
+          minChunks: 2,
           minSize: 0,
+          name: "common",
           reuseExistingChunk: true,
+          test: /.*node_modules[\\/](?!(@artsy[\\/]|react[\\/]|react-dom[\\/]|backbone.*[\\/]|lodash.*[\\/]|moment.*[\\/]|luxon.*[\\/]|jquery.*[\\/]))/,
         },
       },
       maxInitialRequests: Infinity,
     },
   },
   output: {
-    filename: "novo-[name].js",
+    filename: "novo-[name].22820.[contenthash].js",
     path: path.resolve(basePath, "public/assets-novo"),
     publicPath: "/assets-novo/",
   },
@@ -205,7 +203,22 @@ export const clientNovoProductionConfig = {
     new WebpackManifestPlugin({
       basePath: "/assets-novo/",
       fileName: path.resolve(basePath, "manifest-novo.json"),
-      seed: env.isProduction ? getCSSManifest() : {},
+    }),
+    new HtmlWebpackPlugin({
+      filename: path.resolve(basePath, "public", "index.ejs"),
+      inject: false,
+      minify: {
+        collapseWhitespace: true,
+        conservativeCollapse: true,
+        removeComments: true,
+      },
+      template: `!!raw-loader!${path.resolve(
+        basePath,
+        "src",
+        "novo",
+        "src",
+        "index.ejs"
+      )}`,
     }),
   ],
   resolve: {
@@ -215,7 +228,7 @@ export const clientNovoProductionConfig = {
       react: require.resolve("react"),
       // The following packages need to be resolved to the host app (force) to get
       // around issues involving `yarn link` and multiple instances. A  similar
-      // configuration has been setup for SSR in `src/index`, via `require-control`.
+      // configuration has been setup for SSR in `src / index`, via `require - control`.
       "styled-components": require.resolve("styled-components"),
     },
     extensions: [
@@ -228,7 +241,7 @@ export const clientNovoProductionConfig = {
       ".jade",
       ".coffee",
     ],
-    // Symlink issues should be fixed via `yarn --pnp`
+    // Symlink issues should be fixed via `yarn--pnp`
     modules: [path.resolve(basePath, "src"), "node_modules"],
     symlinks: false,
   },
