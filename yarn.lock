@@ -6789,9 +6789,9 @@ debug@^3.1.0, debug@^3.2.6:
     ms "^2.1.1"
 
 decache@^4.4.0:
-  version "4.4.0"
-  resolved "https://registry.yarnpkg.com/decache/-/decache-4.4.0.tgz#6f6df6b85d7e7c4410a932ffc26489b78e9acd13"
-  integrity sha1-b232uF1+fEQQqTL/wmSJt46azRM=
+  version "4.6.0"
+  resolved "https://registry.yarnpkg.com/decache/-/decache-4.6.0.tgz#87026bc6e696759e82d57a3841c4e251a30356e8"
+  integrity sha512-PppOuLiz+DFeaUvFXEYZjLxAkKiMYH/do/b/MxpDe/8AgKBi5GhZxridoVIbBq72GDbL36e4p0Ce2jTGUwwU+w==
   dependencies:
     callsite "^1.0.0"
 

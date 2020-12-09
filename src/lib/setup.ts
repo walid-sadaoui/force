@@ -66,45 +66,16 @@ export default function forceMiddleware(app) {
         src: path.resolve(__dirname, "../mobile"),
       })
     )
-
-    // Setup hot-swap loader. See https://github.com/artsy/express-reloadable
-    const { createReloadable } = require("@artsy/express-reloadable")
-    const mountAndReload = createReloadable(app, require)
-
-    app.use((req, res, next) => {
-      if (res.locals.sd.IS_MOBILE) {
-        // Mount reloadable mobile app
-        const mobileApp = mountAndReload(path.resolve("src/mobile"))
-        mobileApp(req, res, next)
-      } else {
-        next()
-      }
-    })
-
-    // Mount reloadable desktop
-    mountAndReload(path.resolve("src/desktop"), {
-      watchModules: [
-        path.resolve(process.cwd(), "src/v2"),
-        "@artsy/cohesion",
-        "@artsy/fresnel",
-        "@artsy/palette",
-        "@artsy/reaction",
-        "@artsy/stitch",
-      ],
-    })
-
-    // In staging or prod, mount routes normally
-  } else {
-    app.use((req, res, next) => {
-      if (res.locals.sd.IS_MOBILE) {
-        // Mount mobile app
-        require("../mobile")(req, res, next)
-      } else {
-        next()
-      }
-    })
-
-    // Mount desktop app
-    app.use(require("../desktop"))
   }
+  app.use((req, res, next) => {
+    if (res.locals.sd.IS_MOBILE) {
+      // Mount mobile app
+      require("../mobile")(req, res, next)
+    } else {
+      next()
+    }
+  })
+
+  // Mount desktop app
+  app.use(require("../desktop"))
 }

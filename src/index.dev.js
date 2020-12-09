@@ -15,6 +15,7 @@ process.env.AUTO_CONFIGURE = true
 // via webpack.
 const { setAliases } = require("require-control")
 
+const { createReloadable } = require("@artsy/express-reloadable")
 const express = require("express")
 const path = require("path")
 const webpack = require("webpack")
@@ -39,6 +40,7 @@ function startServer() {
   const compiler = webpack([clientNovoConfig, clientForceConfig])
 
   const app = express()
+  const mountAndReload = createReloadable(app, require)
   const wdm = webpackDevMiddleware(compiler, {
     publicPath: clientForceConfig.output.publicPath,
     quiet: true,
@@ -68,6 +70,21 @@ function startServer() {
       log: false,
     })
   )
+
+  // TODO: While we have time rethink this hot-reloader. At a minimum drop the
+  // express requirement and investigate nodemon for side effect free hot
+  // reloading.
+  mountAndReload(path.resolve("./common-app"), {
+    watchModules: [
+      path.resolve(process.cwd(), "src"),
+      "@artsy/cohesion",
+      "@artsy/fresnel",
+      "@artsy/palette",
+      "@artsy/reaction",
+      "@artsy/stitch",
+    ],
+  })
+
   app.use(force)
 
   const server = app.listen(5000, "localhost", err => {

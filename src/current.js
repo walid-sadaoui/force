@@ -37,7 +37,7 @@ function swapBackboneSync() {
   }
 }
 
-function initializeForce(startServerCallback) {
+export function initializeForce(startServerCallback) {
   // TODO: Should we still hold off the server spin up until after the cache is loaded?
   // Connect to Redis
   initializeCache(() => {
@@ -82,7 +82,3 @@ function initializeForce(startServerCallback) {
 
   return app
 }
-
-// TODO: Remove when no longer needed for hot reloading
-module.exports = app
-module.exports.initializeForce = initializeForce
