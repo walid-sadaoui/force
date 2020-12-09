@@ -7,7 +7,6 @@ import { HeadProvider } from "react-head"
 import { Environment } from "relay-runtime"
 import { data as sd } from "sharify"
 import { Provider as StateProvider } from "unstated"
-import { BreakpointVisualizer } from "v2/Utils/BreakpointVisualizer"
 import Events from "v2/Utils/Events"
 import { getENV } from "v2/Utils/getENV"
 import { ErrorBoundary } from "./ErrorBoundary"
@@ -79,9 +78,6 @@ export const Boot = track(null, {
                       <FlashMessage />
                       <FocusVisible />
                       {children}
-                      {process.env.NODE_ENV === "development" && (
-                        <BreakpointVisualizer />
-                      )}
                     </Grid>
                   </ResponsiveProvider>
                 </MediaContextProvider>

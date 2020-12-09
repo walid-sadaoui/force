@@ -476,21 +476,38 @@ const StaticSearchContainer: React.FC<{ searchQuery: string } & BoxProps> = ({
   ...rest
 }) => {
   return (
-    <>
-      <Box display={["block", "none"]} {...rest}>
-        <SearchInputContainer
-          placeholder={searchQuery || PLACEHOLDER_XS}
-          defaultValue={searchQuery}
+    <Form action="/search" method="GET" onSubmit={event => {}}>
+      <Media at="xs">
+        <Autosuggest
+          suggestions={[]}
+          onSuggestionsClearRequested={() => {}}
+          onSuggestionsFetchRequested={() => {}}
+          getSuggestionValue={() => {}}
+          renderSuggestion={() => {}}
+          inputProps={{
+            onChange: () => {},
+            placeholder: "Search Artsy",
+            value: "",
+          }}
+          renderInputComponent={props => <SearchInputContainer {...props} />}
         />
-      </Box>
-
-      <Box display={["none", "block"]} {...rest}>
-        <SearchInputContainer
-          placeholder={searchQuery || PLACEHOLDER}
-          defaultValue={searchQuery}
+      </Media>
+      <Media greaterThan="xs">
+        <Autosuggest
+          suggestions={[]}
+          onSuggestionsClearRequested={() => {}}
+          onSuggestionsFetchRequested={() => {}}
+          getSuggestionValue={() => {}}
+          renderSuggestion={() => {}}
+          inputProps={{
+            onChange: () => {},
+            placeholder: "Search by artist, gallery, style, theme, tag, etc.",
+            value: "",
+          }}
+          renderInputComponent={props => <SearchInputContainer {...props} />}
         />
-      </Box>
-    </>
+      </Media>
+    </Form>
   )
 }
 
