@@ -1196,17 +1196,6 @@ type ArtistTargetSupply {
 }
 
 type ArtistTargetSupplyMicrofunnel {
-  artworks(
-    # Randomize the order of artworks for display purposes.
-    randomize: Boolean
-
-    # Number of artworks to return
-    size: Int
-  ): [ArtistTargetSupplyMicrofunnelArtwork]
-    @deprecated(
-      reason: "Prefer to use `artworksConnection`. [Will be removed in v2]"
-    )
-
   # A list of recently sold artworks.
   artworksConnection(
     after: String
@@ -1218,11 +1207,6 @@ type ArtistTargetSupplyMicrofunnel {
     randomize: Boolean
   ): ArtworkConnection
   metadata: TargetSupplyMicrofunnelMetadata
-}
-
-type ArtistTargetSupplyMicrofunnelArtwork {
-  artwork: Artwork
-  realizedPrice: String
 }
 
 type Artwork implements Node & Searchable & Sellable {
@@ -1403,6 +1387,7 @@ type Artwork implements Node & Searchable & Sellable {
   # in the target supply microfunnel and (currently) queries against hardcoded
   # spreadsheet data.
   realizedPrice: String
+  realizedToEstimate: String
   related(size: Int): [Artwork]
   sale: Sale
   saleArtwork(saleID: String = null): SaleArtwork
@@ -1581,6 +1566,24 @@ type ArtworkMeta {
   share: String
   title: String
 }
+
+type ArtworkMutationDeleteSuccess {
+  success: Boolean
+}
+
+type ArtworkMutationFailure {
+  mutationError: GravityMutationError
+}
+
+type ArtworkMutationSuccess {
+  artwork: Artwork
+  artworkEdge: ArtworkEdgeInterface
+}
+
+union ArtworkMutationType =
+    ArtworkMutationDeleteSuccess
+  | ArtworkMutationFailure
+  | ArtworkMutationSuccess
 
 union ArtworkOrEditionSetType = Artwork | EditionSet
 
@@ -1876,14 +1879,16 @@ type AuctionsLotStandingEdge {
 
 # The state of a lot
 type AuctionsLotState {
-  # total number of bids placed on the lot
+  # total number of actual bids placed by users on the lot
   bidCount: Int!
+
+  # current high bid recognized on the live auction floor
   floorSellingPrice: Money
 
   # selling price, in minor unit, on the live auction floor
   floorSellingPriceCents: Long
 
-  # The bidder currently winning the online portion of the auction
+  # The bidder currently winning the live floor portion of the auction
   floorWinningBidder: AuctionsBidder
 
   # The Gravity Lot ID.
@@ -1904,6 +1909,12 @@ type AuctionsLotState {
 
   # The Gravity Sale ID.
   saleId: ID!
+
+  # current high bid
+  sellingPrice: Money
+
+  # current bid amount in minor unit, whether reserve is met or not
+  sellingPriceCents: Long!
 
   # Whether the lot is sold, for sale or passed
   soldStatus: AuctionsSoldStatus!
@@ -5119,6 +5130,17 @@ type DeepZoomImageSize {
   Width: Int
 }
 
+input DeleteArtworkImageInput {
+  artworkID: String!
+  clientMutationId: String
+  imageID: String!
+}
+
+type DeleteArtworkImagePayload {
+  artworkOrError: ArtworkMutationType
+  clientMutationId: String
+}
+
 input DeleteCreditCardInput {
   clientMutationId: String
   id: String!
@@ -7449,6 +7471,9 @@ type Mutation {
   ): CreateSmsSecondFactorPayload
   createViewingRoom(input: CreateViewingRoomInput!): CreateViewingRoomPayload
 
+  # Deletes an image from an artwork in my collection
+  deleteArtworkImage(input: DeleteArtworkImageInput!): DeleteArtworkImagePayload
+
   # Remove a credit card
   deleteCreditCard(input: DeleteCreditCardInput!): DeleteCreditCardPayload
   deleteViewingRoom(input: DeleteViewingRoomInput!): DeleteViewingRoomPayload
@@ -8650,6 +8675,12 @@ type Query {
     tagID: String
     width: String
   ): FilterArtworksConnection
+
+  # An auction result
+  auctionResult(
+    # The ID of the auction result
+    id: String!
+  ): AuctionResult
 
   # A city-based entry point for local discovery
   city(
@@ -10940,6 +10971,12 @@ type Viewer {
     tagID: String
     width: String
   ): FilterArtworksConnection
+
+  # An auction result
+  auctionResult(
+    # The ID of the auction result
+    id: String!
+  ): AuctionResult
 
   # A city-based entry point for local discovery
   city(
