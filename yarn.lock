@@ -27,10 +27,10 @@
   resolved "https://registry.yarnpkg.com/@artsy/cohesion/-/cohesion-1.60.0.tgz#854db37b9f8643ed650f3cc9d14234a1b762fcc8"
   integrity sha512-GBfa0/AoiLtG/Mw0VBR0vCiEj1s8+eBMTtKSLQS82iFo41Z84Li8M0YrlHAmXUrK3oBOO/YvhVNFE40avgK8xQ==
 
-"@artsy/cohesion@1.67.4":
-  version "1.67.4"
-  resolved "https://registry.yarnpkg.com/@artsy/cohesion/-/cohesion-1.67.4.tgz#3b9200804633b1f0e09ddaf9f6d375a7ee84b377"
-  integrity sha512-UJ4xSPCSE47y+H9mvklKcuVP1Ni0Twp18W0GIXMxfDf7E02L/3A423Y9erW9eUzFUxLW+rsIWjpYvxFSgvuK2A==
+"@artsy/cohesion@1.67.7":
+  version "1.67.7"
+  resolved "https://registry.yarnpkg.com/@artsy/cohesion/-/cohesion-1.67.7.tgz#f9349c56568ad5047c5c30d597c03e6e0d2d804c"
+  integrity sha512-2jv44ORH/0Of439Gm0P8vICg+IdB7fEYsatiKxXssiU5SvAARtk1WdnoiDGsP56Xm6g7KCH3QwyYEZi0vT3vfw==
 
 "@artsy/detect-responsive-traits@^0.0.5":
   version "0.0.5"
@@ -63,10 +63,10 @@
   dependencies:
     uuid "^8.3.0"
 
-"@artsy/palette@13.25.1":
-  version "13.25.1"
-  resolved "https://registry.yarnpkg.com/@artsy/palette/-/palette-13.25.1.tgz#6fb383cc5ba9fa4da05b2d65f9981d1d4d6a5cdd"
-  integrity sha512-dIzDfPgsunvhQYuvbzIRF6xaU0BxaJO7TtX+RuRTq4qv++vGJgjv66S+PJAwu++ixA8KpZKaAaDgd1tNNDQAMA==
+"@artsy/palette@13.26.3":
+  version "13.26.3"
+  resolved "https://registry.yarnpkg.com/@artsy/palette/-/palette-13.26.3.tgz#668a3d01208598176cf5fe5045a1fcaf58f8ef2a"
+  integrity sha512-eu8aMcx4pjV3b7ScwAJvFH4vuKSJ2B3H2+cRKidUmwT6YXykKFu1Oz2TpUFB7OJW7s7hvpSwjhqpw9MG4UM9rA==
   dependencies:
     "@styled-system/theme-get" "^5.1.2"
     d3-interpolate "^1.3.2"
@@ -7749,13 +7749,6 @@ eslint-plugin-react@^7.18.3:
     prop-types "^15.7.2"
     resolve "^1.17.0"
     string.prototype.matchall "^4.0.2"
-
-eslint-plugin-sort-keys-fix@1.1.1:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-sort-keys-fix/-/eslint-plugin-sort-keys-fix-1.1.1.tgz#2ed201b53fd4a89552c6e2abd38933f330a4b62e"
-  integrity sha512-x02SLBg+8OEaoT9vvMbsgeInw17wjHLsa9cOieIVQY+xMNRiXBbyMWw+NiBoxYyJIR4QKDOPDofCjQdoSvltQg==
-  dependencies:
-    requireindex "~1.2.0"
 
 eslint-plugin-styled-components-a11y@0.0.16:
   version "0.0.16"
@@ -16555,11 +16548,6 @@ require-package-name@^2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/require-package-name/-/require-package-name-2.0.1.tgz#c11e97276b65b8e2923f75dabf5fb2ef0c3841b9"
   integrity sha1-wR6XJ2tluOKSP3Xav1+y7ww4Qbk=
-
-requireindex@~1.2.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/requireindex/-/requireindex-1.2.0.tgz#3463cdb22ee151902635aa6c9535d4de9c2ef1ef"
-  integrity sha512-L9jEkOi3ASd9PYit2cwRfyppc9NoABujTP8/5gFcbERmo5jUoAKovIC3fsF17pkTnGsrByysqX+Kxd2OTNI1ww==
 
 requires-port@^1.0.0:
   version "1.0.0"
