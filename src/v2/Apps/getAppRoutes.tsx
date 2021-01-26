@@ -10,13 +10,15 @@ import { conversationRoutes } from "v2/Apps/Conversation/conversationRoutes"
 import { debugRoutes } from "./Debug/debugRoutes"
 import { exampleRoutes } from "./Example/exampleRoutes"
 import { fairRoutes } from "v2/Apps/Fair/fairRoutes"
+import { fairsRoutes } from "v2/Apps/Fairs/fairsRoutes"
 import { featureRoutes } from "v2/Apps/Feature/featureRoutes"
 import { identityVerificationRoutes } from "v2/Apps/IdentityVerification/identityVerificationRoutes"
 import { orderRoutes } from "v2/Apps/Order/orderRoutes"
 import { purchaseRoutes } from "v2/Apps/Purchase/purchaseRoutes"
 import { searchRoutes } from "v2/Apps/Search/searchRoutes"
-import { showRoutes } from "v2/Apps/Show/showRoutes"
+// import { showRoutes } from "v2/Apps/Show/showRoutes"
 import { viewingRoomRoutes } from "./ViewingRoom/viewingRoomRoutes"
+import { auctionsRoutes } from "./Auctions/auctionsRoutes"
 
 export function getAppRoutes(): RouteConfig[] {
   return buildAppRoutes([
@@ -31,6 +33,9 @@ export function getAppRoutes(): RouteConfig[] {
     },
     {
       routes: artworkRoutes,
+    },
+    {
+      routes: auctionsRoutes,
     },
     // NOTE: Converted to use NOVO template.
     // {
@@ -49,6 +54,9 @@ export function getAppRoutes(): RouteConfig[] {
       routes: fairRoutes,
     },
     {
+      routes: fairsRoutes,
+    },
+    {
       routes: featureRoutes,
     },
     {
@@ -63,9 +71,10 @@ export function getAppRoutes(): RouteConfig[] {
     {
       routes: searchRoutes,
     },
-    {
-      routes: showRoutes,
-    },
+    // NOTE: Converted to use NOVO template.
+    // {
+    //   routes: showRoutes,
+    // },
     {
       routes: viewingRoomRoutes,
     },
