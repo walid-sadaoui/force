@@ -10,6 +10,7 @@ import { conversationRoutes } from "v2/Apps/Conversation/conversationRoutes"
 import { debugRoutes } from "./Debug/debugRoutes"
 import { fairRoutes } from "v2/Apps/Fair/fairRoutes"
 import { featureRoutes } from "v2/Apps/Feature/featureRoutes"
+import { geneRoutes } from "v2/Apps/Gene/geneRoutes"
 import { identityVerificationRoutes } from "v2/Apps/IdentityVerification/identityVerificationRoutes"
 import { orderRoutes } from "v2/Apps/Order/orderRoutes"
 import { purchaseRoutes } from "v2/Apps/Purchase/purchaseRoutes"
@@ -50,6 +51,10 @@ export function getAppNovoRoutes(): RouteConfig[] {
       },
       {
         routes: featureRoutes,
+      },
+      {
+        converted: true,
+        routes: geneRoutes,
       },
       {
         routes: identityVerificationRoutes,
