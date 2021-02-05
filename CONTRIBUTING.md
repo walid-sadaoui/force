@@ -98,14 +98,30 @@ that behavior even for subdomains (such as local.artsy.net).
 
 2. Fetch the local development Recaptcha key from 1Password.
 
-3. Update your `.env` file's `APP_URL` and `RECAPTCHA_KEY`:
+3. Update your `.env` file's `APP_URL`, `RECAPTCHA_KEY`, `ARTSY_ID`, and `ARTSY_SECRET`:
+   Note: You can pull the majority of the environment variables from staging config, running:
+   `hokusai staging env get`
 
 ```
 APP_URL=http://local.artsy.net:5000
 RECAPTCHA_KEY=REPLACE_ME
+ARTSY_ID=REPLACE_ME
+ARTSY_SECRET=REPLACE_ME
 ```
 
 4. Visit [`http://local.artsy.net:5000`](http://local.artsy.net:5000).
+
+<details>
+   <summary>Do you see an error about not providing a secure connection?</summary>
+
+Your browser has probably cached a redirect from `http://*.artsy.net` to `https://...`. Clear your browser cache for this page: 
+
+- Browse to https://local.artsy.net:5000
+- Open Chrome Dev Tools (this adds a drop down menu to the reload icon)
+- Click and hold “Reload” icon until the drop down appears.
+- Select “Empty Cache and Hard Reload”
+- You may now browse to http://local.artsy.net:5000
+</details>
 
 ## Creating a Review App
 
