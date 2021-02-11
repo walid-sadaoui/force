@@ -10,6 +10,7 @@ import {
 import React from "react"
 import { createFragmentContainer, graphql } from "react-relay"
 import styled from "styled-components"
+import { DateTime } from "luxon"
 import { RouterLink } from "v2/Artsy/Router/RouterLink"
 import { FairsFairRow_fair } from "v2/__generated__/FairsFairRow_fair.graphql"
 
@@ -26,13 +27,17 @@ interface FairsFairRowProps extends BoxProps {
 }
 
 const FairsFairRow: React.FC<FairsFairRowProps> = ({ fair, ...rest }) => {
-  const icon = fair?.profile?.icon?.resized
+  const icon = fair.profile?.icon?.resized
+  const href =
+    // If fair status is upcoming — link to the organizer profile
+    // TODO: Extract this logic to Metaphysics `href`
+    DateTime.local() < DateTime.fromISO(fair.isoStartAt) &&
+    !!fair?.organizer?.profile?.href
+      ? fair.organizer.profile.href
+      : fair.href
 
   return (
-    <RouterLink
-      to={fair.href}
-      style={{ display: "block", textDecoration: "none" }}
-    >
+    <RouterLink to={href} style={{ display: "block", textDecoration: "none" }}>
       <Container
         alignItems="center"
         borderBottom="1px solid"
@@ -95,8 +100,9 @@ export const FairsFairRowFragmentContainer = createFragmentContainer(
       fragment FairsFairRow_fair on Fair {
         href
         name
+        isoStartAt: startAt
         startAt(format: "MMM Do")
-        endAt(format: "Do YYYY")
+        endAt(format: "MMM Do YYYY")
         profile {
           icon {
             resized(width: 80, height: 80, version: "square140") {
@@ -105,6 +111,11 @@ export const FairsFairRowFragmentContainer = createFragmentContainer(
               src
               srcSet
             }
+          }
+        }
+        organizer {
+          profile {
+            href
           }
         }
       }
