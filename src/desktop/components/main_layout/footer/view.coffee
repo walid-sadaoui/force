@@ -1,4 +1,3 @@
-_ = require 'underscore'
 Backbone = require 'backbone'
 { mediator } = require '../../../../lib/mediator'
 { openAuthModal } = require '../../../lib/openAuthModal'

@@ -1,11 +1,6 @@
-_ = require 'underscore'
 Articles = require '../../collections/articles'
-request = require 'superagent'
 moment = require 'moment'
-async = require 'async'
-PartnerFeaturedCities = require '../../collections/partner_featured_cities'
-{ API_URL, POSITRON_URL, APP_URL, ARTSY_EDITORIAL_CHANNEL, ENABLE_WEB_CRAWLING, SITEMAP_BASE_URL } = require('sharify').data
-artsyXapp = require '@artsy/xapp'
+{ APP_URL, ARTSY_EDITORIAL_CHANNEL, ENABLE_WEB_CRAWLING, SITEMAP_BASE_URL } = require('sharify').data
 PAGE_SIZE = 100
 { parse } = require 'url'
 sd = require 'sharify'
