@@ -1,8 +1,9 @@
 import { MockBoot } from "v2/DevTools/MockBoot"
 import { mount } from "enzyme"
 import React from "react"
-import { Footer, LargeFooter, SmallFooter } from "../Footer"
+import { Footer } from "../Footer"
 import { DownloadAppBadge } from "v2/Components/DownloadAppBadge"
+import { CCPARequest } from "../CCPARequest"
 
 describe("Footer", () => {
   beforeAll(() => {
@@ -23,14 +24,6 @@ describe("Footer", () => {
       </MockBoot>
     )
 
-  it("is responsive", () => {
-    const small = getSmallFooterWrapper()
-    expect(small.find(SmallFooter).length).toEqual(1)
-
-    const large = getLargeFooterWrapper()
-    expect(large.find(LargeFooter).length).toEqual(1)
-  })
-
   it("renders prompts to download the app", () => {
     const small = getSmallFooterWrapper()
     const large = getLargeFooterWrapper()
@@ -39,5 +32,13 @@ describe("Footer", () => {
     expect(large.find("DownloadAppBanner").length).toEqual(1)
     expect(small.find(DownloadAppBadge).length).toEqual(1)
     expect(large.find(DownloadAppBadge).length).toEqual(1)
+  })
+
+  it("renders CCPA Wrapper component", () => {
+    const small = getSmallFooterWrapper()
+    const large = getLargeFooterWrapper()
+
+    expect(small.find(CCPARequest).length).toEqual(1)
+    expect(large.find(CCPARequest).length).toEqual(1)
   })
 })

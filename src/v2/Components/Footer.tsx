@@ -1,7 +1,5 @@
-import { useSystemContext } from "v2/Artsy"
 import React from "react"
 import styled from "styled-components"
-import { FlexDirectionProps } from "styled-system"
 import { Media } from "v2/Utils/Responsive"
 import {
   ArtsyMarkIcon,
@@ -21,8 +19,8 @@ import {
 } from "@artsy/palette"
 import { RouterLink } from "v2/Artsy/Router/RouterLink"
 import { DownloadAppBadge } from "v2/Components/DownloadAppBadge"
-import { Mediator } from "lib/mediator"
 import { ContextModule } from "@artsy/cohesion"
+import { CCPARequest } from "./CCPARequest"
 
 const Column = styled(Flex).attrs({
   flex: 1,
@@ -31,36 +29,8 @@ const Column = styled(Flex).attrs({
   mb: 3,
 })``
 interface Props {
-  mediator?: Mediator
   flushWithContent?: boolean
 }
-
-export const Footer: React.FC<Props> = props => {
-  const { mediator } = useSystemContext()
-  return (
-    <>
-      <Media at="xs">
-        <SmallFooter mediator={mediator} {...props} />
-      </Media>
-
-      <Media greaterThan="xs">
-        <LargeFooter mediator={mediator} {...props} />
-      </Media>
-    </>
-  )
-}
-
-export const LargeFooter = (props: Props) => (
-  <FooterContainer mediator={props.mediator} flexDirection="row" {...props} />
-)
-
-export const SmallFooter = (props: Props) => (
-  <FooterContainer
-    mediator={props.mediator}
-    flexDirection="column"
-    {...props}
-  />
-)
 
 const DownloadAppBanner = () => {
   return (
@@ -110,7 +80,7 @@ const DownloadAppBanner = () => {
   )
 }
 
-const FooterContainer: React.FC<FlexDirectionProps & Props> = props => {
+export const Footer: React.FC<Props> = props => {
   const { flushWithContent } = props
 
   return (
@@ -123,7 +93,7 @@ const FooterContainer: React.FC<FlexDirectionProps & Props> = props => {
       </Media>
       <footer>
         <Flex
-          flexDirection={props.flexDirection}
+          flexDirection={["column", "row"]}
           justifyContent="space-between"
           width="100%"
           maxWidth={breakpoints.xl}
@@ -265,6 +235,9 @@ const Link = styled(RouterLink)`
   align-items: center;
   padding: ${space(1)}px 0;
 `
+const CCPAWrapper = styled(Flex)`
+  text-decoration: none;
+`
 
 const PolicyLinks = () => (
   <>
@@ -297,9 +270,13 @@ const PolicyLinks = () => (
     </Link>
 
     <Link to="/conditions-of-sale">
-      <Text variant="caption" color="black60">
+      <Text variant="caption" color="black60" mr={1}>
         Conditions of Sale
       </Text>
     </Link>
+
+    <CCPAWrapper py={1} justifyContent="center">
+      <CCPARequest />
+    </CCPAWrapper>
   </>
 )
