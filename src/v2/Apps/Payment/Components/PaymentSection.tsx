@@ -42,8 +42,6 @@ export const PaymentSection: React.FC<PaymentSectionProps> = props => {
           <PaymentModal
             show={showPaymentModal}
             closeModal={() => setShowPatymentModal(false)}
-            onError={() => null}
-            onSuccess={() => null}
             relay={props.relay}
             me={props.me}
           />
