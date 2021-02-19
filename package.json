@@ -8,13 +8,15 @@
     "yarn": "1.x.x"
   },
   "scripts": {
-    "build": "yarn build:assets && yarn build:assets:novo && yarn build:server",
+    "build": "yarn build:assets && yarn build:assets:novo && yarn build:assets:dll && yarn build:server",
     "build:fast": "WEBPACK_DEBUG=true yarn build:assets && WEBPACK_DEBUG=true yarn build:assets:novo && WEBPACK_DEBUG=true yarn build:server",
     "build:assets": "NODE_ENV=production BUILD_CLIENT=true yarn webpack",
     "build:assets:novo": "NODE_ENV=production BUILD_NOVO_CLIENT=true yarn webpack",
+    "build:assets:dll": "NODE_ENV=production BUILD_DLL=true yarn webpack",
     "build:server": "NODE_ENV=production BUILD_SERVER=true yarn webpack",
     "bundle-report:assets": "WEBPACK_ANALYZE=true yarn build:assets",
     "bundle-report:assets:novo": "WEBPACK_ANALYZE=true yarn build:assets:novo",
+    "bundle-report:assets:dll": "WEBPACK_ANALYZE=true yarn build:assets:dll",
     "bundle-report:server": "WEBPACK_ANALYZE=true yarn build:server",
     "clean": "scripts/clean.sh",
     "compile": "babel src/v2 --out-dir dist/v2 -s --source-map --extensions '.js,.jsx,.ts,.tsx' --ignore src/v2/**/__tests__",

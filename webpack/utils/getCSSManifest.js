@@ -71,7 +71,7 @@ let cachedManifest = null
 
 export function getCSSManifest() {
   try {
-    if (env.buildServer) {
+    if (env.buildServer || env.buildDll) {
       return {}
     }
     if (cachedManifest) {

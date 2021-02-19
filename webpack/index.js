@@ -8,9 +8,10 @@ const { env } = require("./utils/env")
 const {
   clientCommonConfig,
   clientDevelopmentConfig,
-  clientNovoDevelopmentConfig,
-  clientNovoProductionConfig,
   clientProductionConfig,
+  legacyArtworkDllConfig,
+  novoDevelopmentConfig,
+  novoProductionConfig,
   serverConfig,
 } = require("./envs")
 
@@ -19,9 +20,11 @@ const getServerConfig = () => {
 
   switch (true) {
     case env.isDevelopment || env.isProduction:
-      console.log("[Force] Building server-side code...")
+      console.log("[Force Server] Building server-side code...")
       return serverConfig
   }
+
+  throw new Error(`[Force Server] Unsupported environment ${env.nodeEnv}`)
 }
 
 const getClientConfig = () => {
@@ -32,21 +35,38 @@ const getClientConfig = () => {
       return merge.smart(clientCommonConfig, clientDevelopmentConfig)
 
     case env.isProduction:
-      console.log("[Force] Building client-side production code...")
+      console.log("[Force Client] Building client-side production code...")
       return merge.smart(clientCommonConfig, clientProductionConfig)
   }
+
+  throw new Error(`[Force Client] Unsupported environment ${env.nodeEnv}`)
 }
 
 const getNovoClientConfig = () => {
   switch (true) {
     case env.isDevelopment:
       console.log("[Force Novo] Building client-side development code...")
-      return clientNovoDevelopmentConfig
+      return novoDevelopmentConfig
 
     case env.isProduction:
       console.log("[Force Novo] Building client-side production code...")
-      return clientNovoProductionConfig
+      return novoProductionConfig
   }
+
+  throw new Error(`[Force Novo] Unsupported environment ${env.nodeEnv}`)
+}
+
+const getLegacyArtworkDllConfig = () => {
+  if (env.isProduction) {
+    console.log(
+      "[Force Legacy Artwork Dll] Building legacy dll production code..."
+    )
+    return legacyArtworkDllConfig
+  }
+
+  throw new Error(
+    `[Force Legacy Artwork Dll] Unsupported environment ${env.nodeEnv}`
+  )
 }
 
 function generateEnvBasedConfig() {
@@ -59,7 +79,8 @@ function generateEnvBasedConfig() {
     !env.buildClient &&
     !env.buildServer &&
     !env.buildNovoClient &&
-    !env.buildNovoServer
+    !env.buildNovoServer &&
+    !env.buildDll
   ) {
     console.log("Must build either the CLIENT or SERVER.")
     process.exit(1)
@@ -79,6 +100,8 @@ function generateEnvBasedConfig() {
     config = getServerConfig()
   } else if (env.buildNovoClient) {
     config = getNovoClientConfig()
+  } else if (env.buildDll) {
+    config = getLegacyArtworkDllConfig()
   } else {
     console.log(chalk.red("No build selected."))
     process.exit(1)
@@ -109,9 +132,9 @@ module.exports = generateEnvBasedConfig()
 if (process.env.AUTO_CONFIGURE) {
   module.exports.createConfig = function (config, options) {
     if (config === "novo.dev") {
-      return clientNovoDevelopmentConfig
+      return novoDevelopmentConfig
     } else if (config === "novo.prod") {
-      return clientNovoProductionConfig
+      return novoProductionConfig
     } else if (config === "force.dev") {
       return merge.smart(clientCommonConfig, clientDevelopmentConfig)
     } else if (config === "force.prod") {

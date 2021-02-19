@@ -2,16 +2,18 @@
 
 const { clientCommonConfig } = require("./clientCommonConfig")
 const { clientDevelopmentConfig } = require("./clientDevelopmentConfig")
-const { clientNovoDevelopmentConfig } = require("./clientNovoDevelopmentConfig")
-const { clientNovoProductionConfig } = require("./clientNovoProductionConfig")
 const { clientProductionConfig } = require("./clientProductionConfig")
+const { legacyArtworkDllConfig } = require("./legacyArtworkDllConfig")
+const { novoDevelopmentConfig } = require("./novoDevelopmentConfig")
+const { novoProductionConfig } = require("./novoProductionConfig")
 const { serverConfig } = require("./serverConfig")
 
 export {
   clientCommonConfig,
   clientDevelopmentConfig,
-  clientNovoDevelopmentConfig,
-  clientNovoProductionConfig,
   clientProductionConfig,
+  legacyArtworkDllConfig,
+  novoDevelopmentConfig,
+  novoProductionConfig,
   serverConfig,
 }

@@ -33,6 +33,7 @@ import {
   useAnalyticsContext,
 } from "v2/Artsy/Analytics/AnalyticsContext"
 import { Mediator } from "lib/mediator"
+import { data } from "sharify"
 
 export interface Props {
   artwork: ArtworkApp_artwork
@@ -45,6 +46,30 @@ export interface Props {
 }
 
 declare const window: any
+
+export class LegacyArtworkDllContainer extends React.Component {
+  componentDidMount() {
+    if (
+      sd.NODE_ENV === "production" &&
+      !document.getElementById("legacy-artwork-dll")
+    ) {
+      const script = document.createElement("script")
+      script.id = "legacy-artwork-dll"
+      script.src = `/assets-novo/${data.ASSET_LEGACY_ARTWORK_DLL}`
+      document.body.appendChild(script)
+    }
+
+    import("desktop/apps/artsy-v2/apps/artwork/artworkClient").then(
+      ({ artworkClient }) => {
+        artworkClient()
+      }
+    )
+  }
+
+  render() {
+    return null
+  }
+}
 
 export class ArtworkApp extends React.Component<Props> {
   /**
@@ -172,6 +197,11 @@ export class ArtworkApp extends React.Component<Props> {
     const { artwork, me } = this.props
     return (
       <AppContainer>
+        <LegacyArtworkDllContainer />
+        {/* FIXME: remove once we refactor out legacy backbone code.
+            Add place to attach legacy flash message, used in legacy inquiry flow
+         */}
+        <div id="main-layout-flash" />
         <HorizontalPadding>
           {/* NOTE: react-head automatically moves these tags to the <head> element */}
           <ArtworkMeta artwork={artwork} />

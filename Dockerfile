@@ -141,6 +141,7 @@ RUN yarn build:assets
 # ---------------------------------------------------------
 FROM builder-src as builder-assets-novo
 
+RUN yarn build:assets:dll
 RUN yarn build:assets:novo
 
 # ---------------------------------------------------------
@@ -167,6 +168,9 @@ COPY --from=builder-assets /app/src ./src
 # Client (Novo) assets
 COPY --from=builder-assets-novo /app/manifest-novo.json .
 COPY --from=builder-assets-novo /app/public ./public
+
+# Client (Dll) assets
+COPY --from=builder-assets-novo /app/manifest-legacy-artwork-dll.json .
 
 # Server assets
 COPY --from=builder-server /app/server.dist.js .
